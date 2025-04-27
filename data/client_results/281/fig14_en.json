@@ -1,0 +1,89 @@
+{
+  "metadata": {
+    "timestamp": "2025-04-27 12:24:10",
+    "description": "Table showing the number of products for each sales quantity (Top 15 most frequent quantities)",
+    "frequency": "Quarterly",
+    "title": " Sales Quantity Frequency (Top 15)",
+    "chart_type": "table",
+    "x_axis": {
+      "name": "Columns",
+      "type": "Category",
+      "title": "Columns"
+    },
+    "y_axis": {
+      "name": "Rows",
+      "type": "Number",
+      "title": "Rows"
+    },
+    "series": [
+      {
+        "name": "Quantity Sold"
+      },
+      {
+        "name": "Number of Products"
+      }
+    ]
+  },
+  "data": [
+    {
+      "Quantity Sold": 1.0,
+      "Number of Products": 5.0
+    },
+    {
+      "Quantity Sold": 2.0,
+      "Number of Products": 3.0
+    },
+    {
+      "Quantity Sold": 3.0,
+      "Number of Products": 2.0
+    },
+    {
+      "Quantity Sold": 4.0,
+      "Number of Products": 2.0
+    },
+    {
+      "Quantity Sold": 5.0,
+      "Number of Products": 2.0
+    },
+    {
+      "Quantity Sold": 6.0,
+      "Number of Products": 1.0
+    },
+    {
+      "Quantity Sold": 7.0,
+      "Number of Products": 1.0
+    },
+    {
+      "Quantity Sold": 9.0,
+      "Number of Products": 1.0
+    },
+    {
+      "Quantity Sold": 10.0,
+      "Number of Products": 1.0
+    },
+    {
+      "Quantity Sold": 11.0,
+      "Number of Products": 2.0
+    },
+    {
+      "Quantity Sold": 12.99,
+      "Number of Products": 1.0
+    },
+    {
+      "Quantity Sold": 13.99,
+      "Number of Products": 1.0
+    },
+    {
+      "Quantity Sold": 14.99,
+      "Number of Products": 1.0
+    },
+    {
+      "Quantity Sold": 15.0,
+      "Number of Products": 1.0
+    },
+    {
+      "Quantity Sold": 19.990000000000002,
+      "Number of Products": 1.0
+    }
+  ]
+}

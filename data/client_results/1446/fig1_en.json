@@ -1,0 +1,41 @@
+{
+  "metadata": {
+    "timestamp": "2025-04-27 12:25:06",
+    "description": "Current Stock Quantity vs Sales Quantity for Top 20 Sold Products",
+    "frequency": "Weekly",
+    "title": " Stock vs Sales (Top 20)",
+    "chart_type": "bar",
+    "x_axis": {
+      "name": "name",
+      "type": "Category",
+      "title": "Name"
+    },
+    "y_axis": {
+      "name": "value",
+      "type": "Number",
+      "title": "Value"
+    },
+    "series": [
+      {
+        "name": "Current Stock",
+        "color": "rgb(55, 83, 109)"
+      },
+      {
+        "name": "Sales",
+        "color": "rgb(26, 118, 255)"
+      }
+    ]
+  },
+  "data": [
+    {
+      "Product": "منتج متعدد جديد - احمر مخطط وسط ولادي عصري امريكي مالح",
+      "Current Stock": 930.0,
+      "Sales": 70.0
+    },
+    {
+      "Product": "منتج متعدد جديد - احمر مخطط وسط ولادي عصري امريكي مر",
+      "Current Stock": 930.0,
+      "Sales": 70.0
+    }
+  ]
+}

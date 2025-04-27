@@ -1,0 +1,222 @@
+{
+  "metadata": {
+    "timestamp": "2025-04-27 12:24:10",
+    "description": "العلاقة بين سعر البيع وكمية المبيعات للمنتجات",
+    "frequency": "شهري",
+    "title": " السعر مقابل الكمية المباعة",
+    "chart_type": "scatter",
+    "x_axis": {
+      "name": "salePrice",
+      "type": "رقم",
+      "title": "Saleprice"
+    },
+    "y_axis": {
+      "name": "sales_quantity",
+      "type": "رقم",
+      "title": "Sales Quantity"
+    },
+    "series": [
+      {
+        "name": "المنتجات",
+        "color": "blue"
+      }
+    ]
+  },
+  "data": [
+    {
+      "Product Name": "منتج اول المدة",
+      "Sale Price": 100.0,
+      "Quantity Sold": 4.0
+    },
+    {
+      "Product Name": "منتج ضريبي",
+      "Sale Price": 100.0,
+      "Quantity Sold": 19.990000000000002
+    },
+    {
+      "Product Name": "منتج اول المدة 2",
+      "Sale Price": 100.0,
+      "Quantity Sold": 99.94
+    },
+    {
+      "Product Name": "منتج 5",
+      "Sale Price": 100.0,
+      "Quantity Sold": 2.0
+    },
+    {
+      "Product Name": "منتج شراء",
+      "Sale Price": 100.0,
+      "Quantity Sold": 3.0
+    },
+    {
+      "Product Name": "حذاء - اطفالي صغير",
+      "Sale Price": 100.0,
+      "Quantity Sold": 3.0
+    },
+    {
+      "Product Name": "حذاء - اطفالي وسط",
+      "Sale Price": 100.0,
+      "Quantity Sold": 10.0
+    },
+    {
+      "Product Name": "حذاء - اطفالي كبير",
+      "Sale Price": 100.0,
+      "Quantity Sold": 9.0
+    },
+    {
+      "Product Name": "حذاء - نسائي صغير",
+      "Sale Price": 100.0,
+      "Quantity Sold": 11.0
+    },
+    {
+      "Product Name": "حذاء - نسائي وسط",
+      "Sale Price": 100.0,
+      "Quantity Sold": 22.0
+    },
+    {
+      "Product Name": "حذاء - نسائي كبير",
+      "Sale Price": 100.0,
+      "Quantity Sold": 35.0
+    },
+    {
+      "Product Name": "rrr",
+      "Sale Price": 100.0,
+      "Quantity Sold": 98.0
+    },
+    {
+      "Product Name": "منتج مياه 500",
+      "Sale Price": 36.52,
+      "Quantity Sold": 119.0
+    },
+    {
+      "Product Name": "منتج",
+      "Sale Price": 100.0,
+      "Quantity Sold": 33.0
+    },
+    {
+      "Product Name": "منتج ذو ضريبتين",
+      "Sale Price": 100.0,
+      "Quantity Sold": 81.0
+    },
+    {
+      "Product Name": "منتج جديد",
+      "Sale Price": 100.0,
+      "Quantity Sold": 7.0
+    },
+    {
+      "Product Name": "تجربة المخزون",
+      "Sale Price": 9.0,
+      "Quantity Sold": 30.0
+    },
+    {
+      "Product Name": "منتج 58855",
+      "Sale Price": 100.0,
+      "Quantity Sold": 20.0
+    },
+    {
+      "Product Name": "منتج جديد ضريبتين",
+      "Sale Price": 100.0,
+      "Quantity Sold": 1.0
+    },
+    {
+      "Product Name": "منتج تجربة تكلفة",
+      "Sale Price": 99.0,
+      "Quantity Sold": 35.0
+    },
+    {
+      "Product Name": "منتج جديد تكلفة",
+      "Sale Price": 100.0,
+      "Quantity Sold": 87.0
+    },
+    {
+      "Product Name": "منتج بدون ضريبة",
+      "Sale Price": 100.0,
+      "Quantity Sold": 21.0
+    },
+    {
+      "Product Name": "بطارية باناسونيك ازرق  9 فولت BT-6F22NPT/1B",
+      "Sale Price": 5.0,
+      "Quantity Sold": 1.0
+    },
+    {
+      "Product Name": "منتج ضريبي جديد",
+      "Sale Price": 100.0,
+      "Quantity Sold": 15.0
+    },
+    {
+      "Product Name": "منتج تجربة",
+      "Sale Price": 4831.3,
+      "Quantity Sold": 5.0
+    },
+    {
+      "Product Name": "حساس لطس 40 واط ناشيونال NATIONAL-40W",
+      "Sale Price": 40.0,
+      "Quantity Sold": 4.0
+    },
+    {
+      "Product Name": "منتج 1010",
+      "Sale Price": 100.0,
+      "Quantity Sold": 6.0
+    },
+    {
+      "Product Name": " حافظة ادوية الكتروني مع منبه /4",
+      "Sale Price": 51.75,
+      "Quantity Sold": 1.0
+    },
+    {
+      "Product Name": "منتج تجربة تقريب",
+      "Sale Price": 1.9,
+      "Quantity Sold": 7701.0
+    },
+    {
+      "Product Name": "منتج جديد تجربة",
+      "Sale Price": 100.0,
+      "Quantity Sold": 40.0
+    },
+    {
+      "Product Name": "منتج عادي 1",
+      "Sale Price": 100.0,
+      "Quantity Sold": 12.99
+    },
+    {
+      "Product Name": "منتج رقمي 1",
+      "Sale Price": 100.0,
+      "Quantity Sold": 1.0
+    },
+    {
+      "Product Name": "منتج - اطفالي كبير ابيض",
+      "Sale Price": 100.0,
+      "Quantity Sold": 14.99
+    },
+    {
+      "Product Name": "منتج مجمع 1",
+      "Sale Price": 250.0,
+      "Quantity Sold": 13.99
+    },
+    {
+      "Product Name": "منتج من اكسل",
+      "Sale Price": 15.0,
+      "Quantity Sold": 2.0
+    },
+    {
+      "Product Name": "منتج تجربة",
+      "Sale Price": 100.0,
+      "Quantity Sold": 1.0
+    },
+    {
+      "Product Name": "منتج جديد",
+      "Sale Price": 100.0,
+      "Quantity Sold": 11.0
+    },
+    {
+      "Product Name": "منتج مجمع 2",
+      "Sale Price": 400.0,
+      "Quantity Sold": 5.0
+    },
+    {
+      "Product Name": "منتج جديد",
+      "Sale Price": 100.0,
+      "Quantity Sold": 2.0
+    }
+  ]
+}

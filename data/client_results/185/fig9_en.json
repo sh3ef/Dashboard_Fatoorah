@@ -1,0 +1,51 @@
+{
+  "metadata": {
+    "timestamp": "2025-04-27 13:25:05",
+    "description": "Products with current stock less than or equal to 10",
+    "frequency": "Weekly",
+    "title": " Products to Restock (<= 10)",
+    "chart_type": "bar",
+    "x_axis": {
+      "name": "name",
+      "type": "Category",
+      "title": "Product"
+    },
+    "y_axis": {
+      "name": "current_stock",
+      "type": "Number",
+      "title": "Current Stock"
+    },
+    "series": [
+      {
+        "name": "Stock",
+        "color": "red"
+      }
+    ]
+  },
+  "data": [
+    {
+      "Product": "عصير المراعي",
+      "Current Stock": 9.99
+    },
+    {
+      "Product": "عصير نادك",
+      "Current Stock": 9.99
+    },
+    {
+      "Product": "برتقال",
+      "Current Stock": 9.99
+    },
+    {
+      "Product": "عصير نادك رمان",
+      "Current Stock": 9.99
+    },
+    {
+      "Product": "فراولة",
+      "Current Stock": 9.99
+    },
+    {
+      "Product": "تفاح",
+      "Current Stock": 9.99
+    }
+  ]
+}

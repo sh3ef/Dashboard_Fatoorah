@@ -1,0 +1,47 @@
+{
+  "metadata": {
+    "timestamp": "2025-04-27 12:25:06",
+    "description": "Revenue, Cost of Goods Sold (COGS), and Profit Margin for Top 20 Products by Revenue",
+    "frequency": "Monthly",
+    "title": " Revenue Analysis (with COGS)",
+    "chart_type": "bar",
+    "x_axis": {
+      "name": "name",
+      "type": "Category",
+      "title": "Name"
+    },
+    "y_axis": {
+      "name": "value",
+      "type": "Number",
+      "title": "Value"
+    },
+    "series": [
+      {
+        "name": "Revenue",
+        "color": "rgb(26, 118, 255)"
+      },
+      {
+        "name": "COGS",
+        "color": "rgb(255, 127, 14)"
+      },
+      {
+        "name": "Margin",
+        "color": "rgb(44, 160, 44)"
+      }
+    ]
+  },
+  "data": [
+    {
+      "Product": "منتج متعدد جديد - احمر مخطط وسط ولادي عصري امريكي مالح",
+      "Revenue": 402.5,
+      "COGS": 280.0,
+      "Margin": 122.5
+    },
+    {
+      "Product": "منتج متعدد جديد - احمر مخطط وسط ولادي عصري امريكي مر",
+      "Revenue": 402.5,
+      "COGS": 280.0,
+      "Margin": 122.5
+    }
+  ]
+}

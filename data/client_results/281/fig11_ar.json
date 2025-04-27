@@ -1,0 +1,637 @@
+{
+  "metadata": {
+    "timestamp": "2025-04-27 12:24:10",
+    "description": "المبيعات اليومية الفعلية والتنبؤ مع فترة الثقة",
+    "frequency": "يومي",
+    "title": " المبيعات اليومية والتنبؤ",
+    "chart_type": "line",
+    "x_axis": {
+      "name": "date",
+      "type": "تاريخ",
+      "title": "Date"
+    },
+    "y_axis": {
+      "name": "value",
+      "type": "رقم",
+      "title": "Value"
+    },
+    "series": [
+      {
+        "name": "المبيعات الفعلية",
+        "color": "blue"
+      },
+      {
+        "name": "المبيعات المتوقعة",
+        "color": "red"
+      },
+      {
+        "name": "فترة الثقة 95%",
+        "color": "rgba(255, 0, 0, 0.15)"
+      }
+    ]
+  },
+  "data": [
+    {
+      "date": "2024-05-18",
+      "value": 1150.0,
+      "type": "actual",
+      "lower_ci": null,
+      "upper_ci": null
+    },
+    {
+      "date": "2024-06-05",
+      "value": 1150.0,
+      "type": "actual",
+      "lower_ci": null,
+      "upper_ci": null
+    },
+    {
+      "date": "2024-06-19",
+      "value": 575.0,
+      "type": "actual",
+      "lower_ci": null,
+      "upper_ci": null
+    },
+    {
+      "date": "2024-06-23",
+      "value": 3402.4,
+      "type": "actual",
+      "lower_ci": null,
+      "upper_ci": null
+    },
+    {
+      "date": "2024-06-27",
+      "value": 3392.5,
+      "type": "actual",
+      "lower_ci": null,
+      "upper_ci": null
+    },
+    {
+      "date": "2024-06-29",
+      "value": 2990.0,
+      "type": "actual",
+      "lower_ci": null,
+      "upper_ci": null
+    },
+    {
+      "date": "2024-07-01",
+      "value": 1035.0,
+      "type": "actual",
+      "lower_ci": null,
+      "upper_ci": null
+    },
+    {
+      "date": "2024-07-02",
+      "value": 1150.0,
+      "type": "actual",
+      "lower_ci": null,
+      "upper_ci": null
+    },
+    {
+      "date": "2024-07-03",
+      "value": 3450.0,
+      "type": "actual",
+      "lower_ci": null,
+      "upper_ci": null
+    },
+    {
+      "date": "2024-07-04",
+      "value": 1150.0,
+      "type": "actual",
+      "lower_ci": null,
+      "upper_ci": null
+    },
+    {
+      "date": "2024-07-09",
+      "value": 115.0,
+      "type": "actual",
+      "lower_ci": null,
+      "upper_ci": null
+    },
+    {
+      "date": "2024-07-10",
+      "value": 209.99,
+      "type": "actual",
+      "lower_ci": null,
+      "upper_ci": null
+    },
+    {
+      "date": "2024-07-14",
+      "value": 3249.99,
+      "type": "actual",
+      "lower_ci": null,
+      "upper_ci": null
+    },
+    {
+      "date": "2024-07-15",
+      "value": 2300.0,
+      "type": "actual",
+      "lower_ci": null,
+      "upper_ci": null
+    },
+    {
+      "date": "2024-07-16",
+      "value": 2826.25,
+      "type": "actual",
+      "lower_ci": null,
+      "upper_ci": null
+    },
+    {
+      "date": "2024-07-18",
+      "value": 575.0,
+      "type": "actual",
+      "lower_ci": null,
+      "upper_ci": null
+    },
+    {
+      "date": "2024-07-20",
+      "value": 920.0,
+      "type": "actual",
+      "lower_ci": null,
+      "upper_ci": null
+    },
+    {
+      "date": "2024-07-21",
+      "value": 2075.0,
+      "type": "actual",
+      "lower_ci": null,
+      "upper_ci": null
+    },
+    {
+      "date": "2024-07-23",
+      "value": 125.99,
+      "type": "actual",
+      "lower_ci": null,
+      "upper_ci": null
+    },
+    {
+      "date": "2024-07-24",
+      "value": 900.0,
+      "type": "actual",
+      "lower_ci": null,
+      "upper_ci": null
+    },
+    {
+      "date": "2024-07-25",
+      "value": 2524.98,
+      "type": "actual",
+      "lower_ci": null,
+      "upper_ci": null
+    },
+    {
+      "date": "2024-07-26",
+      "value": 2968.88,
+      "type": "actual",
+      "lower_ci": null,
+      "upper_ci": null
+    },
+    {
+      "date": "2024-07-27",
+      "value": 42.0,
+      "type": "actual",
+      "lower_ci": null,
+      "upper_ci": null
+    },
+    {
+      "date": "2024-07-28",
+      "value": 541.0,
+      "type": "actual",
+      "lower_ci": null,
+      "upper_ci": null
+    },
+    {
+      "date": "2024-07-31",
+      "value": 345.0,
+      "type": "actual",
+      "lower_ci": null,
+      "upper_ci": null
+    },
+    {
+      "date": "2024-08-01",
+      "value": 84.0,
+      "type": "actual",
+      "lower_ci": null,
+      "upper_ci": null
+    },
+    {
+      "date": "2024-08-03",
+      "value": 2208.0,
+      "type": "actual",
+      "lower_ci": null,
+      "upper_ci": null
+    },
+    {
+      "date": "2024-08-05",
+      "value": 502.0,
+      "type": "actual",
+      "lower_ci": null,
+      "upper_ci": null
+    },
+    {
+      "date": "2024-08-08",
+      "value": 801.0,
+      "type": "actual",
+      "lower_ci": null,
+      "upper_ci": null
+    },
+    {
+      "date": "2024-08-09",
+      "value": 4595.5,
+      "type": "actual",
+      "lower_ci": null,
+      "upper_ci": null
+    },
+    {
+      "date": "2024-08-14",
+      "value": 2350.0,
+      "type": "actual",
+      "lower_ci": null,
+      "upper_ci": null
+    },
+    {
+      "date": "2024-08-15",
+      "value": 1035.0,
+      "type": "actual",
+      "lower_ci": null,
+      "upper_ci": null
+    },
+    {
+      "date": "2024-08-19",
+      "value": 28970.0,
+      "type": "actual",
+      "lower_ci": null,
+      "upper_ci": null
+    },
+    {
+      "date": "2024-08-20",
+      "value": 115.0,
+      "type": "actual",
+      "lower_ci": null,
+      "upper_ci": null
+    },
+    {
+      "date": "2024-08-22",
+      "value": 16792.3,
+      "type": "actual",
+      "lower_ci": null,
+      "upper_ci": null
+    },
+    {
+      "date": "2024-08-25",
+      "value": 1075.0,
+      "type": "actual",
+      "lower_ci": null,
+      "upper_ci": null
+    },
+    {
+      "date": "2024-08-31",
+      "value": 4600.0,
+      "type": "actual",
+      "lower_ci": null,
+      "upper_ci": null
+    },
+    {
+      "date": "2024-09-03",
+      "value": 5005.0,
+      "type": "actual",
+      "lower_ci": null,
+      "upper_ci": null
+    },
+    {
+      "date": "2024-09-04",
+      "value": 1788.75,
+      "type": "actual",
+      "lower_ci": null,
+      "upper_ci": null
+    },
+    {
+      "date": "2024-09-07",
+      "value": 2040.0,
+      "type": "actual",
+      "lower_ci": null,
+      "upper_ci": null
+    },
+    {
+      "date": "2024-09-11",
+      "value": 3000.0,
+      "type": "actual",
+      "lower_ci": null,
+      "upper_ci": null
+    },
+    {
+      "date": "2024-09-14",
+      "value": 316.0,
+      "type": "actual",
+      "lower_ci": null,
+      "upper_ci": null
+    },
+    {
+      "date": "2024-09-15",
+      "value": 271.0,
+      "type": "actual",
+      "lower_ci": null,
+      "upper_ci": null
+    },
+    {
+      "date": "2024-09-18",
+      "value": 735.19,
+      "type": "actual",
+      "lower_ci": null,
+      "upper_ci": null
+    },
+    {
+      "date": "2024-09-19",
+      "value": 178.0,
+      "type": "actual",
+      "lower_ci": null,
+      "upper_ci": null
+    },
+    {
+      "date": "2024-09-20",
+      "value": 244.0,
+      "type": "actual",
+      "lower_ci": null,
+      "upper_ci": null
+    },
+    {
+      "date": "2024-09-21",
+      "value": 1150.0,
+      "type": "actual",
+      "lower_ci": null,
+      "upper_ci": null
+    },
+    {
+      "date": "2024-09-22",
+      "value": 120.0,
+      "type": "actual",
+      "lower_ci": null,
+      "upper_ci": null
+    },
+    {
+      "date": "2024-09-25",
+      "value": 1725.0,
+      "type": "actual",
+      "lower_ci": null,
+      "upper_ci": null
+    },
+    {
+      "date": "2024-10-12",
+      "value": 457.7,
+      "type": "actual",
+      "lower_ci": null,
+      "upper_ci": null
+    },
+    {
+      "date": "2024-10-13",
+      "value": 343.85,
+      "type": "actual",
+      "lower_ci": null,
+      "upper_ci": null
+    },
+    {
+      "date": "2024-10-17",
+      "value": 2791.475,
+      "type": "actual",
+      "lower_ci": null,
+      "upper_ci": null
+    },
+    {
+      "date": "2024-10-20",
+      "value": 101.2,
+      "type": "actual",
+      "lower_ci": null,
+      "upper_ci": null
+    },
+    {
+      "date": "2024-10-22",
+      "value": 103.5,
+      "type": "actual",
+      "lower_ci": null,
+      "upper_ci": null
+    },
+    {
+      "date": "2024-11-03",
+      "value": 345.0,
+      "type": "actual",
+      "lower_ci": null,
+      "upper_ci": null
+    },
+    {
+      "date": "2024-11-04",
+      "value": 2000.0,
+      "type": "actual",
+      "lower_ci": null,
+      "upper_ci": null
+    },
+    {
+      "date": "2024-11-12",
+      "value": 100.0,
+      "type": "actual",
+      "lower_ci": null,
+      "upper_ci": null
+    },
+    {
+      "date": "2024-11-22",
+      "value": 467.85,
+      "type": "actual",
+      "lower_ci": null,
+      "upper_ci": null
+    },
+    {
+      "date": "2024-11-23",
+      "value": 343.85,
+      "type": "actual",
+      "lower_ci": null,
+      "upper_ci": null
+    },
+    {
+      "date": "2024-12-01",
+      "value": 228.85,
+      "type": "actual",
+      "lower_ci": null,
+      "upper_ci": null
+    },
+    {
+      "date": "2024-12-09",
+      "value": 228.85,
+      "type": "actual",
+      "lower_ci": null,
+      "upper_ci": null
+    },
+    {
+      "date": "2024-12-12",
+      "value": 573.85,
+      "type": "actual",
+      "lower_ci": null,
+      "upper_ci": null
+    },
+    {
+      "date": "2024-12-16",
+      "value": 457.7,
+      "type": "actual",
+      "lower_ci": null,
+      "upper_ci": null
+    },
+    {
+      "date": "2024-12-22",
+      "value": 4162.2,
+      "type": "actual",
+      "lower_ci": null,
+      "upper_ci": null
+    },
+    {
+      "date": "2024-12-29",
+      "value": 1031.55,
+      "type": "actual",
+      "lower_ci": null,
+      "upper_ci": null
+    },
+    {
+      "date": "2025-01-09",
+      "value": 40.0,
+      "type": "actual",
+      "lower_ci": null,
+      "upper_ci": null
+    },
+    {
+      "date": "2025-01-14",
+      "value": 1724.2,
+      "type": "actual",
+      "lower_ci": null,
+      "upper_ci": null
+    },
+    {
+      "date": "2025-02-01",
+      "value": 115.0,
+      "type": "actual",
+      "lower_ci": null,
+      "upper_ci": null
+    },
+    {
+      "date": "2025-02-03",
+      "value": 283.5,
+      "type": "actual",
+      "lower_ci": null,
+      "upper_ci": null
+    },
+    {
+      "date": "2025-02-05",
+      "value": 156.75,
+      "type": "actual",
+      "lower_ci": null,
+      "upper_ci": null
+    },
+    {
+      "date": "2025-02-22",
+      "value": 100.0,
+      "type": "actual",
+      "lower_ci": null,
+      "upper_ci": null
+    },
+    {
+      "date": "2025-02-24",
+      "value": 230.0,
+      "type": "actual",
+      "lower_ci": null,
+      "upper_ci": null
+    },
+    {
+      "date": "2025-02-25",
+      "value": 271.25,
+      "lower_ci": 0.0,
+      "upper_ci": 4133.58,
+      "type": "forecast"
+    },
+    {
+      "date": "2025-02-26",
+      "value": 200.88,
+      "lower_ci": 0.0,
+      "upper_ci": 4063.21,
+      "type": "forecast"
+    },
+    {
+      "date": "2025-02-27",
+      "value": 130.52,
+      "lower_ci": 0.0,
+      "upper_ci": 3992.85,
+      "type": "forecast"
+    },
+    {
+      "date": "2025-02-28",
+      "value": 112.23,
+      "lower_ci": 0.0,
+      "upper_ci": 3974.56,
+      "type": "forecast"
+    },
+    {
+      "date": "2025-03-01",
+      "value": 692.45,
+      "lower_ci": 0.0,
+      "upper_ci": 4554.78,
+      "type": "forecast"
+    },
+    {
+      "date": "2025-03-02",
+      "value": 803.61,
+      "lower_ci": 0.0,
+      "upper_ci": 4665.94,
+      "type": "forecast"
+    },
+    {
+      "date": "2025-03-03",
+      "value": 1231.91,
+      "lower_ci": 0.0,
+      "upper_ci": 5094.24,
+      "type": "forecast"
+    },
+    {
+      "date": "2025-03-04",
+      "value": 1161.55,
+      "lower_ci": 0.0,
+      "upper_ci": 5023.88,
+      "type": "forecast"
+    },
+    {
+      "date": "2025-03-05",
+      "value": 1091.18,
+      "lower_ci": 0.0,
+      "upper_ci": 4953.51,
+      "type": "forecast"
+    },
+    {
+      "date": "2025-03-06",
+      "value": 1020.82,
+      "lower_ci": 0.0,
+      "upper_ci": 4883.15,
+      "type": "forecast"
+    },
+    {
+      "date": "2025-03-07",
+      "value": 897.96,
+      "lower_ci": 0.0,
+      "upper_ci": 4760.29,
+      "type": "forecast"
+    },
+    {
+      "date": "2025-03-08",
+      "value": 827.59,
+      "lower_ci": 0.0,
+      "upper_ci": 4689.92,
+      "type": "forecast"
+    },
+    {
+      "date": "2025-03-09",
+      "value": 809.73,
+      "lower_ci": 0.0,
+      "upper_ci": 4672.06,
+      "type": "forecast"
+    },
+    {
+      "date": "2025-03-10",
+      "value": 1238.03,
+      "lower_ci": 0.0,
+      "upper_ci": 5100.36,
+      "type": "forecast"
+    }
+  ]
+}

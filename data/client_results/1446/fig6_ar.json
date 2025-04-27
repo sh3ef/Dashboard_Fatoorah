@@ -1,0 +1,39 @@
+{
+  "metadata": {
+    "timestamp": "2025-04-27 12:25:06",
+    "description": "تحليل باريتو للمنتجات التي تمثل 80% من كمية المبيعات",
+    "frequency": "شهري",
+    "title": " تحليل باريتو (كمية المبيعات)",
+    "chart_type": "combo",
+    "x_axis": {
+      "name": "name",
+      "type": "فئة",
+      "title": "Name"
+    },
+    "y_axis": {
+      "name": "sales_quantity",
+      "type": "رقم",
+      "title": "Sales Quantity"
+    },
+    "series": [
+      {
+        "name": "كمية المبيعات",
+        "color": "cornflowerblue",
+        "type": "bar"
+      },
+      {
+        "name": "النسبة التراكمية %",
+        "color": "red",
+        "type": "line"
+      }
+    ]
+  },
+  "data": [
+    {
+      "Product": "منتج متعدد جديد - احمر مخطط وسط ولادي عصري امريكي مالح",
+      "كمية المبيعات": 70.0,
+      "النسبة التراكمية %": 50.0,
+      "percentage_category": "40-50%"
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "metadata": {
+    "timestamp": "2025-04-27 12:25:06",
+    "description": "العلاقة بين سعر البيع وكمية المبيعات للمنتجات",
+    "frequency": "شهري",
+    "title": " السعر مقابل الكمية المباعة",
+    "chart_type": "scatter",
+    "x_axis": {
+      "name": "salePrice",
+      "type": "رقم",
+      "title": "Saleprice"
+    },
+    "y_axis": {
+      "name": "sales_quantity",
+      "type": "رقم",
+      "title": "Sales Quantity"
+    },
+    "series": [
+      {
+        "name": "المنتجات",
+        "color": "blue"
+      }
+    ]
+  },
+  "data": [
+    {
+      "Product Name": "منتج متعدد جديد - احمر مخطط وسط ولادي عصري امريكي مالح",
+      "Sale Price": 5.0,
+      "Quantity Sold": 70.0
+    },
+    {
+      "Product Name": "منتج متعدد جديد - احمر مخطط وسط ولادي عصري امريكي مر",
+      "Sale Price": 5.0,
+      "Quantity Sold": 70.0
+    }
+  ]
+}

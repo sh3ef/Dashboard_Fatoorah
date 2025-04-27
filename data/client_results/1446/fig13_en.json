@@ -1,0 +1,35 @@
+{
+  "metadata": {
+    "timestamp": "2025-04-27 12:25:06",
+    "description": "Bottom 10 selling products by quantity",
+    "frequency": "Monthly",
+    "title": " Bottom 10 Selling Products",
+    "chart_type": "bar",
+    "x_axis": {
+      "name": "sales_quantity",
+      "type": "Number",
+      "title": "Sales Quantity"
+    },
+    "y_axis": {
+      "name": "name",
+      "type": "Category",
+      "title": "Name"
+    },
+    "series": [
+      {
+        "name": "Sales",
+        "color": "value-based"
+      }
+    ]
+  },
+  "data": [
+    {
+      "Product": "منتج متعدد جديد - احمر مخطط وسط ولادي عصري امريكي مالح",
+      "Quantity Sold": 70.0
+    },
+    {
+      "Product": "منتج متعدد جديد - احمر مخطط وسط ولادي عصري امريكي مر",
+      "Quantity Sold": 70.0
+    }
+  ]
+}

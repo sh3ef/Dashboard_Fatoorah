@@ -1,0 +1,51 @@
+{
+  "metadata": {
+    "timestamp": "2025-04-27 12:25:06",
+    "description": "إجمالي المخزون والمبيعات مجمعة حسب فئة كفاءة المخزون",
+    "frequency": "شهري",
+    "title": " مقارنة الكفاءة الإجمالية",
+    "chart_type": "bar",
+    "x_axis": {
+      "name": "efficiency_category_translated",
+      "type": "فئة",
+      "title": "Efficiency Category Translated"
+    },
+    "y_axis": {
+      "name": "value",
+      "type": "رقم",
+      "title": "Value"
+    },
+    "series": [
+      {
+        "name": "إجمالي المخزون",
+        "color": "rgb(55, 83, 109)"
+      },
+      {
+        "name": "إجمالي المبيعات",
+        "color": "rgb(26, 118, 255)"
+      }
+    ]
+  },
+  "data": [
+    {
+      "Efficiency Category": "نقص توريد",
+      "إجمالي المخزون": 0.0,
+      "إجمالي المبيعات": 0.0
+    },
+    {
+      "Efficiency Category": "متوازن",
+      "إجمالي المخزون": 0.0,
+      "إجمالي المبيعات": 0.0
+    },
+    {
+      "Efficiency Category": "فائض توريد",
+      "إجمالي المخزون": 1860.0,
+      "إجمالي المبيعات": 140.0
+    },
+    {
+      "Efficiency Category": "غير متاح",
+      "إجمالي المخزون": 0.0,
+      "إجمالي المبيعات": 0.0
+    }
+  ]
+}

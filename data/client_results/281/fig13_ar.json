@@ -1,0 +1,67 @@
+{
+  "metadata": {
+    "timestamp": "2025-04-27 12:24:10",
+    "description": "أقل 10 منتجات مبيعاً حسب الكمية",
+    "frequency": "شهري",
+    "title": " أقل 10 منتجات مبيعاً",
+    "chart_type": "bar",
+    "x_axis": {
+      "name": "sales_quantity",
+      "type": "رقم",
+      "title": "Sales Quantity"
+    },
+    "y_axis": {
+      "name": "name",
+      "type": "فئة",
+      "title": "Name"
+    },
+    "series": [
+      {
+        "name": "المبيعات",
+        "color": "value-based"
+      }
+    ]
+  },
+  "data": [
+    {
+      "Product": "منتج جديد ضريبتين",
+      "Quantity Sold": 1.0
+    },
+    {
+      "Product": "بطارية باناسونيك ازرق  9 فولت BT-6F22NPT/1B",
+      "Quantity Sold": 1.0
+    },
+    {
+      "Product": " حافظة ادوية الكتروني مع منبه /4",
+      "Quantity Sold": 1.0
+    },
+    {
+      "Product": "منتج رقمي 1",
+      "Quantity Sold": 1.0
+    },
+    {
+      "Product": "منتج تجربة",
+      "Quantity Sold": 1.0
+    },
+    {
+      "Product": "منتج 5",
+      "Quantity Sold": 2.0
+    },
+    {
+      "Product": "منتج من اكسل",
+      "Quantity Sold": 2.0
+    },
+    {
+      "Product": "منتج جديد",
+      "Quantity Sold": 2.0
+    },
+    {
+      "Product": "منتج شراء",
+      "Quantity Sold": 3.0
+    },
+    {
+      "Product": "حذاء - اطفالي صغير",
+      "Quantity Sold": 3.0
+    }
+  ]
+}

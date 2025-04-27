@@ -1,0 +1,57 @@
+{
+  "metadata": {
+    "timestamp": "2025-04-27 13:25:05",
+    "description": "Relationship between Sale Price and Sales Quantity for products",
+    "frequency": "Monthly",
+    "title": " Price vs Quantity Sold",
+    "chart_type": "scatter",
+    "x_axis": {
+      "name": "salePrice",
+      "type": "Number",
+      "title": "Sale Price"
+    },
+    "y_axis": {
+      "name": "sales_quantity",
+      "type": "Number",
+      "title": "Quantity Sold"
+    },
+    "series": [
+      {
+        "name": "Products",
+        "color": "blue"
+      }
+    ]
+  },
+  "data": [
+    {
+      "Product Name": "عصير المراعي",
+      "Sale Price": 10.0,
+      "Quantity Sold": 5.0
+    },
+    {
+      "Product Name": "عصير نادك",
+      "Sale Price": 10.0,
+      "Quantity Sold": 30.0
+    },
+    {
+      "Product Name": "برتقال",
+      "Sale Price": 7.0,
+      "Quantity Sold": 13.0
+    },
+    {
+      "Product Name": "عصير نادك رمان",
+      "Sale Price": 9.0,
+      "Quantity Sold": 7.0
+    },
+    {
+      "Product Name": "فراولة",
+      "Sale Price": 11.0,
+      "Quantity Sold": 8.0
+    },
+    {
+      "Product Name": "تفاح",
+      "Sale Price": 70.0,
+      "Quantity Sold": 21.0
+    }
+  ]
+}

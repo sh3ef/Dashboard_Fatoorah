@@ -1,0 +1,161 @@
+{
+  "metadata": {
+    "timestamp": "2025-04-27 13:25:05",
+    "description": "Actual daily sales and forecast with confidence interval",
+    "frequency": "Daily",
+    "title": " Daily Sales & Forecast",
+    "chart_type": "line",
+    "x_axis": {
+      "name": "date",
+      "type": "Date",
+      "title": "Date"
+    },
+    "y_axis": {
+      "name": "value",
+      "type": "Number",
+      "title": "Total Sales"
+    },
+    "series": [
+      {
+        "name": "Actual Sales",
+        "color": "blue"
+      },
+      {
+        "name": "Forecasted Sales",
+        "color": "red"
+      },
+      {
+        "name": "95% Confidence Interval",
+        "color": "rgba(255, 0, 0, 0.15)"
+      }
+    ]
+  },
+  "data": [
+    {
+      "date": "2024-04-18",
+      "value": 752.5,
+      "type": "actual",
+      "lower_ci": null,
+      "upper_ci": null
+    },
+    {
+      "date": "2024-05-01",
+      "value": 1947.1,
+      "type": "actual",
+      "lower_ci": null,
+      "upper_ci": null
+    },
+    {
+      "date": "2024-05-02",
+      "value": 80.5,
+      "type": "actual",
+      "lower_ci": null,
+      "upper_ci": null
+    },
+    {
+      "date": "2024-05-09",
+      "value": 20.700000000000003,
+      "type": "actual",
+      "lower_ci": null,
+      "upper_ci": null
+    },
+    {
+      "date": "2024-05-10",
+      "value": 627.38,
+      "lower_ci": 559.75,
+      "upper_ci": 695.01,
+      "type": "forecast"
+    },
+    {
+      "date": "2024-05-11",
+      "value": 1080.49,
+      "lower_ci": 878.42,
+      "upper_ci": 1282.56,
+      "type": "forecast"
+    },
+    {
+      "date": "2024-05-12",
+      "value": 1701.24,
+      "lower_ci": 1251.69,
+      "upper_ci": 2150.79,
+      "type": "forecast"
+    },
+    {
+      "date": "2024-05-13",
+      "value": 2396.76,
+      "lower_ci": 1580.41,
+      "upper_ci": 3213.11,
+      "type": "forecast"
+    },
+    {
+      "date": "2024-05-14",
+      "value": 3094.4,
+      "lower_ci": 1770.4,
+      "upper_ci": 4418.4,
+      "type": "forecast"
+    },
+    {
+      "date": "2024-05-15",
+      "value": 3838.06,
+      "lower_ci": 1864.98,
+      "upper_ci": 5811.15,
+      "type": "forecast"
+    },
+    {
+      "date": "2024-05-16",
+      "value": 4620.41,
+      "lower_ci": 1850.07,
+      "upper_ci": 7390.76,
+      "type": "forecast"
+    },
+    {
+      "date": "2024-05-17",
+      "value": 5357.96,
+      "lower_ci": 1647.64,
+      "upper_ci": 9068.28,
+      "type": "forecast"
+    },
+    {
+      "date": "2024-05-18",
+      "value": 6178.24,
+      "lower_ci": 1387.43,
+      "upper_ci": 10969.04,
+      "type": "forecast"
+    },
+    {
+      "date": "2024-05-19",
+      "value": 7070.04,
+      "lower_ci": 1067.23,
+      "upper_ci": 13072.85,
+      "type": "forecast"
+    },
+    {
+      "date": "2024-05-20",
+      "value": 7963.77,
+      "lower_ci": 624.02,
+      "upper_ci": 15303.52,
+      "type": "forecast"
+    },
+    {
+      "date": "2024-05-21",
+      "value": 8786.53,
+      "lower_ci": 0.0,
+      "upper_ci": 17578.15,
+      "type": "forecast"
+    },
+    {
+      "date": "2024-05-22",
+      "value": 9604.05,
+      "lower_ci": 0.0,
+      "upper_ci": 19954.62,
+      "type": "forecast"
+    },
+    {
+      "date": "2024-05-23",
+      "value": 10413.32,
+      "lower_ci": 0.0,
+      "upper_ci": 22420.63,
+      "type": "forecast"
+    }
+  ]
+}

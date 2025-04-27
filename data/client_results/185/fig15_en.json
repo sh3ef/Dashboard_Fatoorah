@@ -1,0 +1,51 @@
+{
+  "metadata": {
+    "timestamp": "2025-04-27 13:25:05",
+    "description": "Top 10 selling products by quantity",
+    "frequency": "Monthly",
+    "title": " Top 10 Selling Products",
+    "chart_type": "bar",
+    "x_axis": {
+      "name": "sales_quantity",
+      "type": "Number",
+      "title": "Quantity Sold"
+    },
+    "y_axis": {
+      "name": "name",
+      "type": "Category",
+      "title": "Product"
+    },
+    "series": [
+      {
+        "name": "Sales",
+        "color": "value-based"
+      }
+    ]
+  },
+  "data": [
+    {
+      "Product": "عصير نادك",
+      "Quantity Sold": 30.0
+    },
+    {
+      "Product": "تفاح",
+      "Quantity Sold": 21.0
+    },
+    {
+      "Product": "برتقال",
+      "Quantity Sold": 13.0
+    },
+    {
+      "Product": "فراولة",
+      "Quantity Sold": 8.0
+    },
+    {
+      "Product": "عصير نادك رمان",
+      "Quantity Sold": 7.0
+    },
+    {
+      "Product": "عصير المراعي",
+      "Quantity Sold": 5.0
+    }
+  ]
+}

@@ -1,0 +1,290 @@
+{
+  "metadata": {
+    "timestamp": "2025-04-27 12:24:10",
+    "description": "Products not sold recently, categorized by stagnancy period",
+    "frequency": "Monthly",
+    "title": " Stagnant Products",
+    "chart_type": "bar",
+    "x_axis": {
+      "name": "name",
+      "type": "Category",
+      "title": "Name"
+    },
+    "y_axis": {
+      "name": "days_since_last_sale",
+      "type": "Number",
+      "title": "Days Since Last Sale"
+    },
+    "series": [
+      {
+        "name": "Stagnancy Period"
+      }
+    ]
+  },
+  "data": [
+    {
+      "Product": "منتج - اطفالي كبير ابيض",
+      "Days Since Last Sale": 311,
+      "Stagnancy Period": "6-12 months",
+      "Last Sale": "2024-06-19",
+      "Stock": 9.99,
+      "ID": "676"
+    },
+    {
+      "Product": "منتج عادي 1",
+      "Days Since Last Sale": 279,
+      "Stagnancy Period": "6-12 months",
+      "Last Sale": "2024-07-21",
+      "Stock": 6.99,
+      "ID": "667"
+    },
+    {
+      "Product": "منتج اول المدة",
+      "Days Since Last Sale": 255,
+      "Stagnancy Period": "6-12 months",
+      "Last Sale": "2024-08-14",
+      "Stock": 9.99,
+      "ID": "1047"
+    },
+    {
+      "Product": "منتج ضريبي",
+      "Days Since Last Sale": 255,
+      "Stagnancy Period": "6-12 months",
+      "Last Sale": "2024-08-14",
+      "Stock": 9.99,
+      "ID": "1056"
+    },
+    {
+      "Product": "منتج اول المدة 2",
+      "Days Since Last Sale": 255,
+      "Stagnancy Period": "6-12 months",
+      "Last Sale": "2024-08-14",
+      "Stock": 9.99,
+      "ID": "1057"
+    },
+    {
+      "Product": "حذاء - اطفالي صغير",
+      "Days Since Last Sale": 255,
+      "Stagnancy Period": "6-12 months",
+      "Last Sale": "2024-08-14",
+      "Stock": 100.0,
+      "ID": "1152"
+    },
+    {
+      "Product": "حذاء - اطفالي وسط",
+      "Days Since Last Sale": 255,
+      "Stagnancy Period": "6-12 months",
+      "Last Sale": "2024-08-14",
+      "Stock": 95.0,
+      "ID": "1153"
+    },
+    {
+      "Product": "منتج 5",
+      "Days Since Last Sale": 255,
+      "Stagnancy Period": "6-12 months",
+      "Last Sale": "2024-08-14",
+      "Stock": 9.99,
+      "ID": "1058"
+    },
+    {
+      "Product": "منتج شراء",
+      "Days Since Last Sale": 255,
+      "Stagnancy Period": "6-12 months",
+      "Last Sale": "2024-08-14",
+      "Stock": 8.99,
+      "ID": "1147"
+    },
+    {
+      "Product": "حذاء - نسائي وسط",
+      "Days Since Last Sale": 255,
+      "Stagnancy Period": "6-12 months",
+      "Last Sale": "2024-08-14",
+      "Stock": 87.0,
+      "ID": "1156"
+    },
+    {
+      "Product": "حذاء - نسائي كبير",
+      "Days Since Last Sale": 255,
+      "Stagnancy Period": "6-12 months",
+      "Last Sale": "2024-08-14",
+      "Stock": 75.0,
+      "ID": "1157"
+    },
+    {
+      "Product": "منتج مياه 500",
+      "Days Since Last Sale": 255,
+      "Stagnancy Period": "6-12 months",
+      "Last Sale": "2024-08-14",
+      "Stock": 190.0,
+      "ID": "1205"
+    },
+    {
+      "Product": "منتج مجمع 2",
+      "Days Since Last Sale": 255,
+      "Stagnancy Period": "6-12 months",
+      "Last Sale": "2024-08-14",
+      "Stock": 0.0,
+      "ID": "953"
+    },
+    {
+      "Product": "منتج مجمع 1",
+      "Days Since Last Sale": 255,
+      "Stagnancy Period": "6-12 months",
+      "Last Sale": "2024-08-14",
+      "Stock": 9.0,
+      "ID": "677"
+    },
+    {
+      "Product": "منتج جديد",
+      "Days Since Last Sale": 255,
+      "Stagnancy Period": "6-12 months",
+      "Last Sale": "2024-08-14",
+      "Stock": 9.99,
+      "ID": "965"
+    },
+    {
+      "Product": "حذاء - اطفالي كبير",
+      "Days Since Last Sale": 255,
+      "Stagnancy Period": "6-12 months",
+      "Last Sale": "2024-08-14",
+      "Stock": 95.0,
+      "ID": "1154"
+    },
+    {
+      "Product": "حذاء - نسائي صغير",
+      "Days Since Last Sale": 255,
+      "Stagnancy Period": "6-12 months",
+      "Last Sale": "2024-08-14",
+      "Stock": 94.0,
+      "ID": "1155"
+    },
+    {
+      "Product": "منتج تجربة",
+      "Days Since Last Sale": 250,
+      "Stagnancy Period": "6-12 months",
+      "Last Sale": "2024-08-19",
+      "Stock": 55.0,
+      "ID": "2901"
+    },
+    {
+      "Product": "rrr",
+      "Days Since Last Sale": 249,
+      "Stagnancy Period": "6-12 months",
+      "Last Sale": "2024-08-20",
+      "Stock": 75.0,
+      "ID": "1203"
+    },
+    {
+      "Product": "منتج جديد تجربة",
+      "Days Since Last Sale": 238,
+      "Stagnancy Period": "6-12 months",
+      "Last Sale": "2024-08-31",
+      "Stock": 68.0,
+      "ID": "6531"
+    },
+    {
+      "Product": "منتج ضريبي جديد",
+      "Days Since Last Sale": 234,
+      "Stagnancy Period": "6-12 months",
+      "Last Sale": "2024-09-04",
+      "Stock": 87.0,
+      "ID": "2900"
+    },
+    {
+      "Product": "منتج تجربة تقريب",
+      "Days Since Last Sale": 220,
+      "Stagnancy Period": "6-12 months",
+      "Last Sale": "2024-09-18",
+      "Stock": 2400.0,
+      "ID": "4760"
+    },
+    {
+      "Product": "منتج من اكسل",
+      "Days Since Last Sale": 220,
+      "Stagnancy Period": "6-12 months",
+      "Last Sale": "2024-09-18",
+      "Stock": 28.0,
+      "ID": "7081"
+    },
+    {
+      "Product": "منتج تجربة",
+      "Days Since Last Sale": 220,
+      "Stagnancy Period": "6-12 months",
+      "Last Sale": "2024-09-18",
+      "Stock": 105.0,
+      "ID": "7221"
+    },
+    {
+      "Product": "منتج جديد",
+      "Days Since Last Sale": 219,
+      "Stagnancy Period": "6-12 months",
+      "Last Sale": "2024-09-19",
+      "Stock": 2.0,
+      "ID": "7222"
+    },
+    {
+      "Product": "منتج جديد ضريبتين",
+      "Days Since Last Sale": 216,
+      "Stagnancy Period": "6-12 months",
+      "Last Sale": "2024-09-22",
+      "Stock": 99.0,
+      "ID": "15690"
+    },
+    {
+      "Product": "منتج بدون ضريبة",
+      "Days Since Last Sale": 165,
+      "Stagnancy Period": "3-6 months",
+      "Last Sale": "2024-11-12",
+      "Stock": 79.0,
+      "ID": "16625"
+    },
+    {
+      "Product": "منتج",
+      "Days Since Last Sale": 125,
+      "Stagnancy Period": "3-6 months",
+      "Last Sale": "2024-12-22",
+      "Stock": 190.0,
+      "ID": "1246"
+    },
+    {
+      "Product": "منتج ذو ضريبتين",
+      "Days Since Last Sale": 102,
+      "Stagnancy Period": "3-6 months",
+      "Last Sale": "2025-01-14",
+      "Stock": 296.0,
+      "ID": "13574"
+    },
+    {
+      "Product": "تجربة المخزون",
+      "Days Since Last Sale": 102,
+      "Stagnancy Period": "3-6 months",
+      "Last Sale": "2025-01-14",
+      "Stock": 198.0,
+      "ID": "13664"
+    },
+    {
+      "Product": "منتج جديد",
+      "Days Since Last Sale": 102,
+      "Stagnancy Period": "3-6 months",
+      "Last Sale": "2025-01-14",
+      "Stock": 100248.0,
+      "ID": "13658"
+    },
+    {
+      "Product": "منتج 58855",
+      "Days Since Last Sale": 102,
+      "Stagnancy Period": "3-6 months",
+      "Last Sale": "2025-01-14",
+      "Stock": 80.0,
+      "ID": "15688"
+    },
+    {
+      "Product": "منتج تجربة تكلفة",
+      "Days Since Last Sale": 102,
+      "Stagnancy Period": "3-6 months",
+      "Last Sale": "2025-01-14",
+      "Stock": 65.0,
+      "ID": "15775"
+    }
+  ]
+}

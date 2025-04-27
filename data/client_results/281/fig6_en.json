@@ -1,0 +1,32 @@
+{
+  "metadata": {
+    "timestamp": "2025-04-27 12:24:10",
+    "description": "Pareto analysis for products representing 80% of sales quantity",
+    "frequency": "Monthly",
+    "title": " Pareto Analysis (Sales Quantity)",
+    "chart_type": "combo",
+    "x_axis": {
+      "name": "name",
+      "type": "Category",
+      "title": "Name"
+    },
+    "y_axis": {
+      "name": "sales_quantity",
+      "type": "Number",
+      "title": "Sales Quantity"
+    },
+    "series": [
+      {
+        "name": "Sales Quantity",
+        "color": "cornflowerblue",
+        "type": "bar"
+      },
+      {
+        "name": "Cumulative %",
+        "color": "red",
+        "type": "line"
+      }
+    ]
+  },
+  "data": []
+}

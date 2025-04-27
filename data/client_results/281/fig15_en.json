@@ -1,0 +1,67 @@
+{
+  "metadata": {
+    "timestamp": "2025-04-27 12:24:10",
+    "description": "Top 10 selling products by quantity",
+    "frequency": "Monthly",
+    "title": " Top 10 Selling Products",
+    "chart_type": "bar",
+    "x_axis": {
+      "name": "sales_quantity",
+      "type": "Number",
+      "title": "Sales Quantity"
+    },
+    "y_axis": {
+      "name": "name",
+      "type": "Category",
+      "title": "Name"
+    },
+    "series": [
+      {
+        "name": "Sales",
+        "color": "value-based"
+      }
+    ]
+  },
+  "data": [
+    {
+      "Product": "منتج تجربة تقريب",
+      "Quantity Sold": 7701.0
+    },
+    {
+      "Product": "منتج مياه 500",
+      "Quantity Sold": 119.0
+    },
+    {
+      "Product": "منتج اول المدة 2",
+      "Quantity Sold": 99.94
+    },
+    {
+      "Product": "rrr",
+      "Quantity Sold": 98.0
+    },
+    {
+      "Product": "منتج جديد تكلفة",
+      "Quantity Sold": 87.0
+    },
+    {
+      "Product": "منتج ذو ضريبتين",
+      "Quantity Sold": 81.0
+    },
+    {
+      "Product": "منتج جديد تجربة",
+      "Quantity Sold": 40.0
+    },
+    {
+      "Product": "حذاء - نسائي كبير",
+      "Quantity Sold": 35.0
+    },
+    {
+      "Product": "منتج تجربة تكلفة",
+      "Quantity Sold": 35.0
+    },
+    {
+      "Product": "منتج",
+      "Quantity Sold": 33.0
+    }
+  ]
+}

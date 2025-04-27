@@ -1,0 +1,26 @@
+{
+  "metadata": {
+    "timestamp": "2025-04-27 12:25:06",
+    "description": "المنتجات التي يقل مخزونها الحالي عن أو يساوي 10",
+    "frequency": "أسبوعي",
+    "title": " منتجات تحتاج لإعادة تخزين (<= 10)",
+    "chart_type": "bar",
+    "x_axis": {
+      "name": "name",
+      "type": "فئة",
+      "title": "المنتج"
+    },
+    "y_axis": {
+      "name": "current_stock",
+      "type": "رقم",
+      "title": "المخزون الحالي"
+    },
+    "series": [
+      {
+        "name": "المخزون",
+        "color": "red"
+      }
+    ]
+  },
+  "data": []
+}

@@ -1,0 +1,49 @@
+{
+  "metadata": {
+    "timestamp": "2025-04-27 13:25:05",
+    "description": "Product distribution by inventory efficiency status",
+    "frequency": "Monthly",
+    "title": " Inventory Efficiency",
+    "chart_type": "pie",
+    "x_axis": {
+      "name": "category",
+      "type": "Category",
+      "title": "Efficiency Categories"
+    },
+    "y_axis": {
+      "name": "value",
+      "type": "Number",
+      "title": "Number of Products"
+    },
+    "series": [
+      {
+        "name": "Undersupplied",
+        "color": "#ff7f0e"
+      },
+      {
+        "name": "Oversupplied",
+        "color": "#d62728"
+      }
+    ]
+  },
+  "data": {
+    "labels": [
+      "Undersupplied",
+      "Oversupplied",
+      "Balanced",
+      "N/A"
+    ],
+    "values": [
+      3,
+      3,
+      0,
+      0
+    ],
+    "colors": [
+      "#ff7f0e",
+      "#d62728",
+      "#2ca02c",
+      "grey"
+    ]
+  }
+}

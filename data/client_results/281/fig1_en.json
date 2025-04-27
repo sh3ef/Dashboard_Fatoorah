@@ -1,0 +1,131 @@
+{
+  "metadata": {
+    "timestamp": "2025-04-27 12:24:10",
+    "description": "Current Stock Quantity vs Sales Quantity for Top 20 Sold Products",
+    "frequency": "Weekly",
+    "title": " Stock vs Sales (Top 20)",
+    "chart_type": "bar",
+    "x_axis": {
+      "name": "name",
+      "type": "Category",
+      "title": "Name"
+    },
+    "y_axis": {
+      "name": "value",
+      "type": "Number",
+      "title": "Value"
+    },
+    "series": [
+      {
+        "name": "Current Stock",
+        "color": "rgb(55, 83, 109)"
+      },
+      {
+        "name": "Sales",
+        "color": "rgb(26, 118, 255)"
+      }
+    ]
+  },
+  "data": [
+    {
+      "Product": "منتج تجربة تقريب",
+      "Current Stock": 2400.0,
+      "Sales": 7701.0
+    },
+    {
+      "Product": "منتج مياه 500",
+      "Current Stock": 190.0,
+      "Sales": 119.0
+    },
+    {
+      "Product": "منتج اول المدة 2",
+      "Current Stock": 9.99,
+      "Sales": 99.94
+    },
+    {
+      "Product": "rrr",
+      "Current Stock": 75.0,
+      "Sales": 98.0
+    },
+    {
+      "Product": "منتج جديد تكلفة",
+      "Current Stock": 43.0,
+      "Sales": 87.0
+    },
+    {
+      "Product": "منتج ذو ضريبتين",
+      "Current Stock": 296.0,
+      "Sales": 81.0
+    },
+    {
+      "Product": "منتج جديد تجربة",
+      "Current Stock": 68.0,
+      "Sales": 40.0
+    },
+    {
+      "Product": "حذاء - نسائي كبير",
+      "Current Stock": 75.0,
+      "Sales": 35.0
+    },
+    {
+      "Product": "منتج تجربة تكلفة",
+      "Current Stock": 65.0,
+      "Sales": 35.0
+    },
+    {
+      "Product": "منتج",
+      "Current Stock": 190.0,
+      "Sales": 33.0
+    },
+    {
+      "Product": "تجربة المخزون",
+      "Current Stock": 198.0,
+      "Sales": 30.0
+    },
+    {
+      "Product": "حذاء - نسائي وسط",
+      "Current Stock": 87.0,
+      "Sales": 22.0
+    },
+    {
+      "Product": "منتج بدون ضريبة",
+      "Current Stock": 79.0,
+      "Sales": 21.0
+    },
+    {
+      "Product": "منتج 58855",
+      "Current Stock": 80.0,
+      "Sales": 20.0
+    },
+    {
+      "Product": "منتج ضريبي",
+      "Current Stock": 9.99,
+      "Sales": 19.990000000000002
+    },
+    {
+      "Product": "منتج ضريبي جديد",
+      "Current Stock": 87.0,
+      "Sales": 15.0
+    },
+    {
+      "Product": "منتج - اطفالي كبير ابيض",
+      "Current Stock": 9.99,
+      "Sales": 14.99
+    },
+    {
+      "Product": "منتج مجمع 1",
+      "Current Stock": 9.0,
+      "Sales": 13.99
+    },
+    {
+      "Product": "منتج عادي 1",
+      "Current Stock": 6.99,
+      "Sales": 12.99
+    },
+    {
+      "Product": "حذاء - نسائي صغير",
+      "Current Stock": 94.0,
+      "Sales": 11.0
+    }
+  ]
+}

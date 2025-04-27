@@ -1,0 +1,54 @@
+{
+  "metadata": {
+    "timestamp": "2025-04-27 12:25:06",
+    "description": "Shares of Top 10 products in total revenue and profit",
+    "frequency": "Monthly",
+    "title": " Top 10 Revenue & Profit Shares",
+    "chart_type": "pie",
+    "x_axis": {
+      "name": "label",
+      "type": "Category",
+      "title": "Product/Category"
+    },
+    "y_axis": {
+      "name": "value",
+      "type": "Number",
+      "title": "Value"
+    },
+    "series": [
+      {
+        "name": "Revenue"
+      },
+      {
+        "name": "Profit"
+      }
+    ]
+  },
+  "data": {
+    "revenue_data": [
+      {
+        "label": "منتج متعدد جديد - احمر مخطط وسط ولادي عصري امريكي مالح",
+        "value": 402.5
+      },
+      {
+        "label": "منتج متعدد جديد - احمر مخطط وسط ولادي عصري امريكي مر",
+        "value": 402.5
+      }
+    ],
+    "profit_data": [
+      {
+        "label": "منتج متعدد جديد - احمر مخطط وسط ولادي عصري امريكي مالح",
+        "value": 122.5
+      },
+      {
+        "label": "منتج متعدد جديد - احمر مخطط وسط ولادي عصري امريكي مر",
+        "value": 122.5
+      }
+    ],
+    "color_map": {
+      "منتج متعدد جديد - احمر مخطط وسط ولادي عصري امريكي مالح": "#636EFA",
+      "منتج متعدد جديد - احمر مخطط وسط ولادي عصري امريكي مر": "#EF553B",
+      "Other": "lightgrey"
+    }
+  }
+}

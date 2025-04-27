@@ -1,0 +1,51 @@
+{
+  "metadata": {
+    "timestamp": "2025-04-27 12:24:10",
+    "description": "Total Stock and Sales aggregated by inventory efficiency category",
+    "frequency": "Monthly",
+    "title": " Overall Efficiency Comparison",
+    "chart_type": "bar",
+    "x_axis": {
+      "name": "efficiency_category_translated",
+      "type": "Category",
+      "title": "Efficiency Category Translated"
+    },
+    "y_axis": {
+      "name": "value",
+      "type": "Number",
+      "title": "Value"
+    },
+    "series": [
+      {
+        "name": "Total Stock",
+        "color": "rgb(55, 83, 109)"
+      },
+      {
+        "name": "Total Sales",
+        "color": "rgb(26, 118, 255)"
+      }
+    ]
+  },
+  "data": [
+    {
+      "Efficiency Category": "Undersupplied",
+      "Total Stock": 2565.96,
+      "Total Sales": 8063.900000000001
+    },
+    {
+      "Efficiency Category": "Balanced",
+      "Total Stock": 0.0,
+      "Total Sales": 0.0
+    },
+    {
+      "Efficiency Category": "Oversupplied",
+      "Total Stock": 102964.95,
+      "Total Sales": 524.0
+    },
+    {
+      "Efficiency Category": "N/A",
+      "Total Stock": 0.0,
+      "Total Sales": 0.0
+    }
+  ]
+}

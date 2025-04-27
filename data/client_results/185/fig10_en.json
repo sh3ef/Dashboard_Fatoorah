@@ -1,0 +1,74 @@
+{
+  "metadata": {
+    "timestamp": "2025-04-27 13:25:05",
+    "description": "Products not sold recently, categorized by stagnancy period",
+    "frequency": "Monthly",
+    "title": " Stagnant Products",
+    "chart_type": "bar",
+    "x_axis": {
+      "name": "name",
+      "type": "Category",
+      "title": "Product"
+    },
+    "y_axis": {
+      "name": "days_since_last_sale",
+      "type": "Number",
+      "title": "Days Since Last Sale"
+    },
+    "series": [
+      {
+        "name": "Stagnancy Period"
+      }
+    ]
+  },
+  "data": [
+    {
+      "Product": "عصير المراعي",
+      "Days Since Last Sale": 373,
+      "Stagnancy Period": "> 1 year",
+      "Last Sale": "2024-04-18",
+      "Stock": 9.99,
+      "ID": "321"
+    },
+    {
+      "Product": "عصير نادك",
+      "Days Since Last Sale": 373,
+      "Stagnancy Period": "> 1 year",
+      "Last Sale": "2024-04-18",
+      "Stock": 9.99,
+      "ID": "323"
+    },
+    {
+      "Product": "عصير نادك رمان",
+      "Days Since Last Sale": 360,
+      "Stagnancy Period": "6-12 months",
+      "Last Sale": "2024-05-01",
+      "Stock": 9.99,
+      "ID": "397"
+    },
+    {
+      "Product": "تفاح",
+      "Days Since Last Sale": 360,
+      "Stagnancy Period": "6-12 months",
+      "Last Sale": "2024-05-01",
+      "Stock": 9.99,
+      "ID": "438"
+    },
+    {
+      "Product": "برتقال",
+      "Days Since Last Sale": 352,
+      "Stagnancy Period": "6-12 months",
+      "Last Sale": "2024-05-09",
+      "Stock": 9.99,
+      "ID": "396"
+    },
+    {
+      "Product": "فراولة",
+      "Days Since Last Sale": 352,
+      "Stagnancy Period": "6-12 months",
+      "Last Sale": "2024-05-09",
+      "Stock": 9.99,
+      "ID": "398"
+    }
+  ]
+}

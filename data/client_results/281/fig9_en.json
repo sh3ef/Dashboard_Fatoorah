@@ -1,0 +1,75 @@
+{
+  "metadata": {
+    "timestamp": "2025-04-27 12:24:10",
+    "description": "Products with current stock less than or equal to 10",
+    "frequency": "Weekly",
+    "title": " Products to Restock (<= 10)",
+    "chart_type": "bar",
+    "x_axis": {
+      "name": "name",
+      "type": "Category",
+      "title": "Product"
+    },
+    "y_axis": {
+      "name": "current_stock",
+      "type": "Number",
+      "title": "Current Stock"
+    },
+    "series": [
+      {
+        "name": "Stock",
+        "color": "red"
+      }
+    ]
+  },
+  "data": [
+    {
+      "Product": "منتج مجمع 2",
+      "Current Stock": 0.0
+    },
+    {
+      "Product": "منتج جديد",
+      "Current Stock": 2.0
+    },
+    {
+      "Product": "منتج عادي 1",
+      "Current Stock": 6.99
+    },
+    {
+      "Product": "منتج شراء",
+      "Current Stock": 8.99
+    },
+    {
+      "Product": " حافظة ادوية الكتروني مع منبه /4",
+      "Current Stock": 9.0
+    },
+    {
+      "Product": "منتج مجمع 1",
+      "Current Stock": 9.0
+    },
+    {
+      "Product": "منتج 5",
+      "Current Stock": 9.99
+    },
+    {
+      "Product": "منتج اول المدة",
+      "Current Stock": 9.99
+    },
+    {
+      "Product": "منتج - اطفالي كبير ابيض",
+      "Current Stock": 9.99
+    },
+    {
+      "Product": "منتج ضريبي",
+      "Current Stock": 9.99
+    },
+    {
+      "Product": "منتج اول المدة 2",
+      "Current Stock": 9.99
+    },
+    {
+      "Product": "منتج جديد",
+      "Current Stock": 9.99
+    }
+  ]
+}

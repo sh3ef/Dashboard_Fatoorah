@@ -1,0 +1,42 @@
+{
+  "metadata": {
+    "timestamp": "2025-04-27 12:25:06",
+    "description": "المبيعات اليومية الفعلية والتنبؤ مع فترة الثقة",
+    "frequency": "يومي",
+    "title": " المبيعات اليومية والتنبؤ",
+    "chart_type": "line",
+    "x_axis": {
+      "name": "date",
+      "type": "تاريخ",
+      "title": "Date"
+    },
+    "y_axis": {
+      "name": "value",
+      "type": "رقم",
+      "title": "Value"
+    },
+    "series": [
+      {
+        "name": "المبيعات الفعلية",
+        "color": "blue"
+      },
+      {
+        "name": "المبيعات المتوقعة",
+        "color": "red"
+      },
+      {
+        "name": "فترة الثقة 95%",
+        "color": "rgba(255, 0, 0, 0.15)"
+      }
+    ]
+  },
+  "data": [
+    {
+      "date": "2025-02-02",
+      "value": 805.0,
+      "type": "actual",
+      "lower_ci": null,
+      "upper_ci": null
+    }
+  ]
+}

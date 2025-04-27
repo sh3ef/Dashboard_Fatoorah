@@ -1,0 +1,25 @@
+{
+  "metadata": {
+    "timestamp": "2025-04-27 12:25:06",
+    "description": "Products not sold recently, categorized by stagnancy period",
+    "frequency": "Monthly",
+    "title": " Stagnant Products",
+    "chart_type": "bar",
+    "x_axis": {
+      "name": "name",
+      "type": "Category",
+      "title": "Name"
+    },
+    "y_axis": {
+      "name": "days_since_last_sale",
+      "type": "Number",
+      "title": "Days Since Last Sale"
+    },
+    "series": [
+      {
+        "name": "Stagnancy Period"
+      }
+    ]
+  },
+  "data": []
+}

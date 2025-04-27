@@ -1,0 +1,51 @@
+{
+  "metadata": {
+    "timestamp": "2025-04-27 13:25:05",
+    "description": "Pareto analysis for products representing 80% of sales quantity",
+    "frequency": "Monthly",
+    "title": " Pareto Analysis (Sales Quantity)",
+    "chart_type": "combo",
+    "x_axis": {
+      "name": "name",
+      "type": "Category",
+      "title": "Product"
+    },
+    "y_axis": {
+      "name": "sales_quantity",
+      "type": "Number",
+      "title": "Sales Quantity (Bars)"
+    },
+    "series": [
+      {
+        "name": "Sales Quantity",
+        "color": "cornflowerblue",
+        "type": "bar"
+      },
+      {
+        "name": "Cumulative %",
+        "color": "red",
+        "type": "line"
+      }
+    ]
+  },
+  "data": [
+    {
+      "Product": "عصير نادك",
+      "Sales Quantity": 30.0,
+      "Cumulative %": 35.71,
+      "percentage_category": "30-40%"
+    },
+    {
+      "Product": "تفاح",
+      "Sales Quantity": 21.0,
+      "Cumulative %": 60.71,
+      "percentage_category": "60-70%"
+    },
+    {
+      "Product": "برتقال",
+      "Sales Quantity": 13.0,
+      "Cumulative %": 76.19,
+      "percentage_category": "70-80%"
+    }
+  ]
+}

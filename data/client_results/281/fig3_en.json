@@ -1,0 +1,155 @@
+{
+  "metadata": {
+    "timestamp": "2025-04-27 12:24:10",
+    "description": "Revenue, Cost of Goods Sold (COGS), and Profit Margin for Top 20 Products by Revenue",
+    "frequency": "Monthly",
+    "title": " Revenue Analysis (with COGS)",
+    "chart_type": "bar",
+    "x_axis": {
+      "name": "name",
+      "type": "Category",
+      "title": "Name"
+    },
+    "y_axis": {
+      "name": "value",
+      "type": "Number",
+      "title": "Value"
+    },
+    "series": [
+      {
+        "name": "Revenue",
+        "color": "rgb(26, 118, 255)"
+      },
+      {
+        "name": "COGS",
+        "color": "rgb(255, 127, 14)"
+      },
+      {
+        "name": "Margin",
+        "color": "rgb(44, 160, 44)"
+      }
+    ]
+  },
+  "data": [
+    {
+      "Product": "منتج تجربة",
+      "Revenue": 27780.0,
+      "COGS": 20000.0,
+      "Margin": 7780.0
+    },
+    {
+      "Product": "منتج تجربة تقريب",
+      "Revenue": 16794.489999999998,
+      "COGS": 13091.699999999999,
+      "Margin": 3702.789999999999
+    },
+    {
+      "Product": "منتج اول المدة 2",
+      "Revenue": 11097.5,
+      "COGS": 9350.3864,
+      "Margin": 1747.1136000000006
+    },
+    {
+      "Product": "منتج ذو ضريبتين",
+      "Revenue": 10798.75,
+      "COGS": 8924.823,
+      "Margin": 1873.9269999999997
+    },
+    {
+      "Product": "rrr",
+      "Revenue": 10781.25,
+      "COGS": 9811.76,
+      "Margin": 969.4899999999998
+    },
+    {
+      "Product": "منتج جديد تكلفة",
+      "Revenue": 9260.375,
+      "COGS": 8700.0,
+      "Margin": 560.375
+    },
+    {
+      "Product": "منتج مياه 500",
+      "Revenue": 4997.83,
+      "COGS": 3565.2400000000002,
+      "Margin": 1432.5899999999997
+    },
+    {
+      "Product": "منتج جديد تجربة",
+      "Revenue": 4600.0,
+      "COGS": 3600.0,
+      "Margin": 1000.0
+    },
+    {
+      "Product": "منتج تجربة تكلفة",
+      "Revenue": 3904.25,
+      "COGS": 0.0,
+      "Margin": 3904.25
+    },
+    {
+      "Product": "منتج",
+      "Revenue": 3795.0,
+      "COGS": 990.0,
+      "Margin": 2805.0
+    },
+    {
+      "Product": "حذاء - نسائي كبير",
+      "Revenue": 3325.0,
+      "COGS": 4200.0,
+      "Margin": -875.0
+    },
+    {
+      "Product": "منتج ضريبي جديد",
+      "Revenue": 3225.0,
+      "COGS": 1500.0,
+      "Margin": 1725.0
+    },
+    {
+      "Product": "منتج مجمع 1",
+      "Revenue": 3077.9,
+      "COGS": 3497.5,
+      "Margin": -419.5999999999999
+    },
+    {
+      "Product": "منتج ضريبي",
+      "Revenue": 2300.0,
+      "COGS": 1999.0000000000002,
+      "Margin": 300.9999999999998
+    },
+    {
+      "Product": "منتج 58855",
+      "Revenue": 2242.5,
+      "COGS": 1800.0,
+      "Margin": 442.5
+    },
+    {
+      "Product": "حذاء - نسائي وسط",
+      "Revenue": 2120.0,
+      "COGS": 2640.0,
+      "Margin": -520.0
+    },
+    {
+      "Product": "منتج بدون ضريبة",
+      "Revenue": 2100.0,
+      "COGS": 1890.0,
+      "Margin": 210.0
+    },
+    {
+      "Product": "منتج - اطفالي كبير ابيض",
+      "Revenue": 1725.0,
+      "COGS": 1668.387,
+      "Margin": 56.613000000000056
+    },
+    {
+      "Product": "منتج مجمع 2",
+      "Revenue": 1700.0,
+      "COGS": 5.0,
+      "Margin": 1695.0
+    },
+    {
+      "Product": "منتج عادي 1",
+      "Revenue": 1495.0,
+      "COGS": 1299.0,
+      "Margin": 196.0
+    }
+  ]
+}

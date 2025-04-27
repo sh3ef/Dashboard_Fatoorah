@@ -1,0 +1,51 @@
+{
+  "metadata": {
+    "timestamp": "2025-04-27 12:25:06",
+    "description": "توزيع المنتجات حسب حالة كفاءة المخزون",
+    "frequency": "شهري",
+    "title": " كفاءة المخزون",
+    "chart_type": "pie",
+    "x_axis": {
+      "name": "category",
+      "type": "فئة",
+      "title": "فئات الكفاءة"
+    },
+    "y_axis": {
+      "name": "value",
+      "type": "رقم",
+      "title": "عدد المنتجات"
+    },
+    "series": [
+      {
+        "name": "Oversupplied",
+        "color": "#d62728"
+      },
+      {
+        "name": "Undersupplied",
+        "color": "#ff7f0e"
+      },
+      {
+        "name": "Balanced",
+        "color": "#2ca02c"
+      },
+      {
+        "name": "N/A",
+        "color": "grey"
+      }
+    ]
+  },
+  "data": {
+    "labels": [
+      "فائض توريد",
+      "نقص توريد",
+      "متوازن",
+      "غير متاح"
+    ],
+    "values": [
+      2,
+      0,
+      0,
+      0
+    ]
+  }
+}

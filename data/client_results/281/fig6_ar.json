@@ -1,0 +1,32 @@
+{
+  "metadata": {
+    "timestamp": "2025-04-27 12:24:10",
+    "description": "تحليل باريتو للمنتجات التي تمثل 80% من كمية المبيعات",
+    "frequency": "شهري",
+    "title": " تحليل باريتو (كمية المبيعات)",
+    "chart_type": "combo",
+    "x_axis": {
+      "name": "name",
+      "type": "فئة",
+      "title": "Name"
+    },
+    "y_axis": {
+      "name": "sales_quantity",
+      "type": "رقم",
+      "title": "Sales Quantity"
+    },
+    "series": [
+      {
+        "name": "كمية المبيعات",
+        "color": "cornflowerblue",
+        "type": "bar"
+      },
+      {
+        "name": "النسبة التراكمية %",
+        "color": "red",
+        "type": "line"
+      }
+    ]
+  },
+  "data": []
+}

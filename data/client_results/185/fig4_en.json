@@ -1,0 +1,63 @@
+{
+  "metadata": {
+    "timestamp": "2025-04-27 13:25:05",
+    "description": "Current Stock (bars) vs Sales Quantity (line) for Top 20 Sold Products",
+    "frequency": "Weekly",
+    "title": "  Current Inventory vs. Sales (Top 20)",
+    "chart_type": "combo",
+    "x_axis": {
+      "name": "name",
+      "type": "Category",
+      "title": "Product"
+    },
+    "y_axis": {
+      "name": "value",
+      "type": "Number",
+      "title": "Quantity"
+    },
+    "series": [
+      {
+        "name": "Current Stock",
+        "color": "lightblue",
+        "type": "bar"
+      },
+      {
+        "name": "Sales",
+        "color": "orange",
+        "type": "line"
+      }
+    ]
+  },
+  "data": [
+    {
+      "Product": "عصير نادك",
+      "Current Stock": 9.99,
+      "Sales": 30.0
+    },
+    {
+      "Product": "تفاح",
+      "Current Stock": 9.99,
+      "Sales": 21.0
+    },
+    {
+      "Product": "برتقال",
+      "Current Stock": 9.99,
+      "Sales": 13.0
+    },
+    {
+      "Product": "فراولة",
+      "Current Stock": 9.99,
+      "Sales": 8.0
+    },
+    {
+      "Product": "عصير نادك رمان",
+      "Current Stock": 9.99,
+      "Sales": 7.0
+    },
+    {
+      "Product": "عصير المراعي",
+      "Current Stock": 9.99,
+      "Sales": 5.0
+    }
+  ]
+}

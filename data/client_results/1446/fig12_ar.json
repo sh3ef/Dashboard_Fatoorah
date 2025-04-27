@@ -1,0 +1,42 @@
+{
+  "metadata": {
+    "timestamp": "2025-04-27 12:25:06",
+    "description": "متوسط قيمة الفاتورة الشهرية (الفعلي مقابل المتوقع)",
+    "frequency": "شهري",
+    "title": " متوسط الفاتورة الشهري والتنبؤ",
+    "chart_type": "line",
+    "x_axis": {
+      "name": "date",
+      "type": "فئة",
+      "title": "Date"
+    },
+    "y_axis": {
+      "name": "value",
+      "type": "رقم",
+      "title": "Value"
+    },
+    "series": [
+      {
+        "name": "المتوسط الفعلي",
+        "color": "royalblue"
+      },
+      {
+        "name": "المتوسط المتوقع",
+        "color": "firebrick"
+      },
+      {
+        "name": "فترة ثقة 95%",
+        "color": "rgba(255, 100, 100, 0.15)"
+      }
+    ]
+  },
+  "data": [
+    {
+      "date": "2025-02",
+      "value": 805.0,
+      "type": "actual",
+      "lower_ci": null,
+      "upper_ci": null
+    }
+  ]
+}

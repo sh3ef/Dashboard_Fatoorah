@@ -1,0 +1,26 @@
+{
+  "metadata": {
+    "timestamp": "2025-04-27 12:25:06",
+    "description": "Products with current stock less than or equal to 10",
+    "frequency": "Weekly",
+    "title": " Products to Restock (<= 10)",
+    "chart_type": "bar",
+    "x_axis": {
+      "name": "name",
+      "type": "Category",
+      "title": "Product"
+    },
+    "y_axis": {
+      "name": "current_stock",
+      "type": "Number",
+      "title": "Current Stock"
+    },
+    "series": [
+      {
+        "name": "Stock",
+        "color": "red"
+      }
+    ]
+  },
+  "data": []
+}

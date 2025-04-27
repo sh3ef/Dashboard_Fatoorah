@@ -1,0 +1,105 @@
+{
+  "metadata": {
+    "timestamp": "2025-04-27 12:24:10",
+    "description": "Monthly average invoice value (actual vs forecast)",
+    "frequency": "Monthly",
+    "title": " Monthly Avg Invoice & Forecast",
+    "chart_type": "line",
+    "x_axis": {
+      "name": "date",
+      "type": "Category",
+      "title": "Date"
+    },
+    "y_axis": {
+      "name": "value",
+      "type": "Number",
+      "title": "Value"
+    },
+    "series": [
+      {
+        "name": "Actual Avg",
+        "color": "royalblue"
+      },
+      {
+        "name": "Forecasted Avg",
+        "color": "firebrick"
+      },
+      {
+        "name": "95% CI",
+        "color": "rgba(255, 100, 100, 0.15)"
+      }
+    ]
+  },
+  "data": [
+    {
+      "date": "2024-05",
+      "value": 383.3333333333333,
+      "type": "actual",
+      "lower_ci": null,
+      "upper_ci": null
+    },
+    {
+      "date": "2024-06",
+      "value": 575.495,
+      "type": "actual",
+      "lower_ci": null,
+      "upper_ci": null
+    },
+    {
+      "date": "2024-07",
+      "value": 411.75507692307696,
+      "type": "actual",
+      "lower_ci": null,
+      "upper_ci": null
+    },
+    {
+      "date": "2024-08",
+      "value": 1343.1334042553192,
+      "type": "actual",
+      "lower_ci": null,
+      "upper_ci": null
+    },
+    {
+      "date": "2024-09",
+      "value": 285.74034482758617,
+      "type": "actual",
+      "lower_ci": null,
+      "upper_ci": null
+    },
+    {
+      "date": "2024-10",
+      "value": 199.88026315789475,
+      "type": "actual",
+      "lower_ci": null,
+      "upper_ci": null
+    },
+    {
+      "date": "2024-11",
+      "value": 361.85555555555555,
+      "type": "actual",
+      "lower_ci": null,
+      "upper_ci": null
+    },
+    {
+      "date": "2024-12",
+      "value": 185.63888888888889,
+      "type": "actual",
+      "lower_ci": null,
+      "upper_ci": null
+    },
+    {
+      "date": "2025-01",
+      "value": 160.38181818181818,
+      "type": "actual",
+      "lower_ci": null,
+      "upper_ci": null
+    },
+    {
+      "date": "2025-02",
+      "value": 88.525,
+      "type": "actual",
+      "lower_ci": null,
+      "upper_ci": null
+    }
+  ]
+}

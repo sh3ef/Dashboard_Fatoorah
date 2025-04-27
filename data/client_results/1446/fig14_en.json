@@ -1,0 +1,33 @@
+{
+  "metadata": {
+    "timestamp": "2025-04-27 12:25:06",
+    "description": "Table showing the number of products for each sales quantity (Top 15 most frequent quantities)",
+    "frequency": "Quarterly",
+    "title": " Sales Quantity Frequency (Top 15)",
+    "chart_type": "table",
+    "x_axis": {
+      "name": "Columns",
+      "type": "Category",
+      "title": "Columns"
+    },
+    "y_axis": {
+      "name": "Rows",
+      "type": "Number",
+      "title": "Rows"
+    },
+    "series": [
+      {
+        "name": "Quantity Sold"
+      },
+      {
+        "name": "Number of Products"
+      }
+    ]
+  },
+  "data": [
+    {
+      "Quantity Sold": 70.0,
+      "Number of Products": 2.0
+    }
+  ]
+}

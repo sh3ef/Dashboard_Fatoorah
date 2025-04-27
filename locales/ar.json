@@ -1,0 +1,323 @@
+{
+    "common": {
+      "product": "المنتج",
+      "quantity": "الكمية",
+      "quantity_sold": "الكمية المباعة",
+      "stock": "المخزون",
+      "supplier_id": "معرف المورد",
+      "outstanding_amount": "المبلغ المستحق",
+      "amount": "المبلغ",
+      "categories": "الفئات",
+      "values": "القيم",
+      "efficiency_category": "فئة الكفاءة",
+      "total_quantity": "إجمالي الكمية",
+      "cogs": "تكلفة البضاعة",
+      "margin": "هامش الربح",
+      "revenue": "الإيرادات",
+      "profit": "الربح",
+      "cumulative_percentage": "النسبة التراكمية %",
+      "sale_price": "سعر البيع",
+      "stagnancy_period": "فترة الركود",
+      "days_since_last_sale": "أيام منذ آخر بيع",
+      "other": "أخرى"
+    },
+    "frequencies": {
+      "daily": "يومي",
+      "weekly": "أسبوعي",
+      "monthly": "شهري",
+      "quarterly": "ربع سنوي"
+    },
+    "axis_types": {
+      "category": "فئة",
+      "number": "رقم",
+      "date": "تاريخ",
+      "text": "نص"
+    },
+    "efficiency_labels": {
+      "Undersupplied": "نقص توريد",
+      "Balanced": "متوازن",
+      "Oversupplied": "فائض توريد",
+      "N/A": "غير متاح"
+    },
+    "stagnant_labels": {
+      "3-6 months": "3-6 أشهر",
+      "6-12 months": "6-12 شهر",
+      ">1 year": "> 1 سنة"
+    },
+    "fig1": {
+      "title": " المخزون مقابل المبيعات (أعلى 20)",
+      "description": "كمية المخزون الحالي مقابل كمية المبيعات لأعلى 20 منتج مبيعًا",
+      "frequency": "weekly",
+      "x_axis": {
+        "title": "المنتج",
+        "type": "category"
+      },
+      "y_axis": {
+        "title": "الكمية",
+        "type": "number"
+      },
+      "series": {
+        "stock": "المخزون الحالي",
+        "sales": "المبيعات"
+      }
+    },
+    "fig2": {
+      "title": " كفاءة المخزون",
+      "description": "توزيع المنتجات حسب حالة كفاءة المخزون",
+      "frequency": "monthly",
+      "x_axis": {
+        "title": "فئات الكفاءة",
+        "type": "category"
+      },
+      "y_axis": {
+        "title": "عدد المنتجات",
+        "type": "number"
+      }
+    },
+    "fig3": {
+      "title": "تحليل الإيرادات (مع COGS)",
+      "description": "الإيرادات، تكلفة البضاعة المباعة، وهامش الربح لأعلى 20 منتج حسب الإيراد",
+      "frequency": "monthly",
+      "x_axis": {
+        "title": "المنتج",
+        "type": "category"
+      },
+      "y_axis": {
+        "title": "المبلغ",
+        "type": "number"
+      },
+      "series": {
+        "revenue": "الإيرادات",
+        "cogs": "تكلفة البضاعة",
+        "margin": "هامش الربح"
+      }
+    },
+    "fig4": {
+      "title": " المخزون الحالي مقابل المبيعات (أعلى 20)",
+      "description": "المخزون الحالي (أعمدة) مقابل كمية المبيعات (خط) لأعلى 20 منتج مبيعًا",
+      "frequency": "weekly",
+      "x_axis": {
+        "title": "المنتج",
+        "type": "category"
+      },
+      "y_axis": {
+        "title": "الكمية",
+        "type": "number"
+      },
+      "series": {
+        "stock": "المخزون الحالي",
+        "sales": "المبيعات"
+      }
+    },
+    "fig5": {
+      "title": " مقارنة الكفاءة الإجمالية",
+      "description": "إجمالي المخزون والمبيعات مجمعة حسب فئة كفاءة المخزون",
+      "frequency": "monthly",
+      "x_axis": {
+        "title": "فئة الكفاءة",
+        "type": "category"
+      },
+      "y_axis": {
+        "title": "إجمالي الكمية",
+        "type": "number"
+      },
+      "series": {
+        "stock": "إجمالي المخزون",
+        "sales": "إجمالي المبيعات"
+      }
+    },
+    "fig6": {
+      "title": " تحليل باريتو (كمية المبيعات)",
+      "description": "تحليل باريتو للمنتجات التي تمثل 80% من كمية المبيعات",
+      "frequency": "monthly",
+      "x_axis": {
+        "title": "المنتج",
+        "type": "category"
+      },
+      "y_axis": {
+        "title": "كمية المبيعات (أعمدة)",
+        "type": "number"
+      },
+      "y2_axis": {
+          "title": "النسبة التراكمية % (خط)",
+          "type": "number"
+      },
+      "series": {
+        "sales": "كمية المبيعات",
+        "cumulative": "النسبة التراكمية %"
+      }
+    },
+    "fig7": {
+      "title": " السعر مقابل الكمية المباعة",
+      "description": "العلاقة بين سعر البيع وكمية المبيعات للمنتجات",
+      "frequency": "monthly",
+      "x_axis": {
+        "title": "سعر البيع",
+        "type": "number"
+      },
+      "y_axis": {
+        "title": "الكمية المباعة",
+        "type": "number"
+      },
+      "series": {
+        "products": "المنتجات"
+      }
+    },
+    "fig9": {
+      "title": " منتجات تحتاج لإعادة تخزين (<= {threshold})",
+      "description": "المنتجات التي يقل مخزونها الحالي عن أو يساوي {threshold}",
+      "frequency": "weekly",
+      "x_axis": {
+        "title": "المنتج",
+        "type": "category"
+      },
+      "y_axis": {
+        "title": "المخزون الحالي",
+        "type": "number"
+      },
+      "series": {
+        "stock": "المخزون"
+      }
+    },
+    "fig10": {
+      "title": " المنتجات الراكدة",
+      "description": "المنتجات التي لم يتم بيعها مؤخرًا، مصنفة حسب فترة الركود",
+      "frequency": "monthly",
+      "x_axis": {
+        "title": "المنتج",
+        "type": "category"
+      },
+      "y_axis": {
+        "title": "أيام منذ آخر بيع",
+        "type": "number"
+      },
+      "series": {
+        "category": "فترة الركود"
+      },
+      "data_keys": {
+          "category": "فترة الركود"
+       }
+    },
+    "fig11": {
+      "title": " المبيعات اليومية والتنبؤ",
+      "description": "المبيعات اليومية الفعلية والتنبؤ مع فترة الثقة",
+      "frequency": "daily",
+      "x_axis": {
+        "title": "التاريخ",
+        "type": "date"
+      },
+      "y_axis": {
+        "title": "إجمالي المبيعات",
+        "type": "number"
+      },
+      "series": {
+        "actual": "المبيعات الفعلية",
+        "forecast": "المبيعات المتوقعة",
+        "ci": "فترة الثقة 95%"
+      }
+    },
+    "fig12": {
+      "title": " متوسط الفاتورة الشهري والتنبؤ",
+      "description": "متوسط قيمة الفاتورة الشهرية (الفعلي مقابل المتوقع)",
+      "frequency": "monthly",
+      "x_axis": {
+        "title": "الشهر (YYYY-MM)",
+        "type": "category"
+      },
+      "y_axis": {
+        "title": "متوسط قيمة الفاتورة",
+        "type": "number"
+      },
+      "series": {
+        "actual": "المتوسط الفعلي",
+        "forecast": "المتوسط المتوقع",
+        "ci": "فترة ثقة 95%"
+      }
+    },
+    "fig13": {
+      "title": " أقل 10 منتجات مبيعاً",
+      "description": "أقل 10 منتجات مبيعاً حسب الكمية",
+      "frequency": "monthly",
+      "x_axis": {
+        "title": "الكمية المباعة",
+        "type": "number"
+      },
+      "y_axis": {
+        "title": "المنتج",
+        "type": "category"
+      },
+      "series": {
+        "sales": "المبيعات"
+      }
+    },
+    "fig14": {
+      "title": " تكرار كميات المبيعات (أعلى 15)",
+      "description": "جدول يوضح عدد المنتجات لكل كمية مبيعًا (أعلى 15 كمية تكرارًا)",
+      "frequency": "quarterly",
+      "x_axis": {
+        "title": "الأعمدة",
+        "type": "category"
+      },
+      "y_axis": {
+        "title": "الصفوف",
+        "type": "category"
+      },
+       "columns": {
+          "quantity": "الكمية المباعة",
+          "num_products": "عدد المنتجات"
+      },
+      "series": [
+         {"name": "الكمية المباعة"},
+         {"name": "عدد المنتجات"}
+      ]
+    },
+    "fig15": {
+      "title": " أعلى 10 منتجات مبيعًا",
+      "description": "أعلى 10 منتجات مبيعًا حسب الكمية",
+      "frequency": "monthly",
+      "x_axis": {
+        "title": "الكمية المباعة",
+        "type": "number"
+      },
+      "y_axis": {
+        "title": "المنتج",
+        "type": "category"
+      },
+      "series": {
+        "sales": "المبيعات"
+      }
+    },
+    "fig16": {
+      "title": " أعلى 10 منتجات ربحًا وإيرادًا",
+      "description": "حصص أعلى 10 منتجات من إجمالي الإيرادات والأرباح",
+      "frequency": "monthly",
+      "x_axis": {
+        "title": "المنتج/الفئة",
+        "type": "category"
+      },
+      "y_axis": {
+        "title": "القيمة",
+        "type": "number"
+      },
+      "series": {
+        "revenue": "الإيرادات",
+        "profit": "الربح"
+      }
+    },
+    "fig17": {
+      "title": "الموردين حسب المبلغ المستحق (أفضل 20)",
+      "description": "أعلى الموردين حسب المبالغ المستحقة لهم",
+      "frequency": "daily",
+      "x_axis": {
+        "title": "المورد (المعرف)",
+        "type": "category"
+      },
+      "y_axis": {
+        "title": "المبلغ المستحق",
+        "type": "number"
+      },
+      "series": {
+        "amount": "المبلغ"
+      }
+    }
+  }

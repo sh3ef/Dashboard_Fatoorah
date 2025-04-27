@@ -1,0 +1,39 @@
+{
+  "metadata": {
+    "timestamp": "2025-04-27 12:25:06",
+    "description": "Pareto analysis for products representing 80% of sales quantity",
+    "frequency": "Monthly",
+    "title": " Pareto Analysis (Sales Quantity)",
+    "chart_type": "combo",
+    "x_axis": {
+      "name": "name",
+      "type": "Category",
+      "title": "Name"
+    },
+    "y_axis": {
+      "name": "sales_quantity",
+      "type": "Number",
+      "title": "Sales Quantity"
+    },
+    "series": [
+      {
+        "name": "Sales Quantity",
+        "color": "cornflowerblue",
+        "type": "bar"
+      },
+      {
+        "name": "Cumulative %",
+        "color": "red",
+        "type": "line"
+      }
+    ]
+  },
+  "data": [
+    {
+      "Product": "منتج متعدد جديد - احمر مخطط وسط ولادي عصري امريكي مالح",
+      "Sales Quantity": 70.0,
+      "Cumulative %": 50.0,
+      "percentage_category": "40-50%"
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "metadata": {
+    "timestamp": "2025-04-27 12:25:06",
+    "description": "المنتجات التي لم يتم بيعها مؤخرًا، مصنفة حسب فترة الركود",
+    "frequency": "شهري",
+    "title": " المنتجات الراكدة",
+    "chart_type": "bar",
+    "x_axis": {
+      "name": "name",
+      "type": "فئة",
+      "title": "Name"
+    },
+    "y_axis": {
+      "name": "days_since_last_sale",
+      "type": "رقم",
+      "title": "Days Since Last Sale"
+    },
+    "series": [
+      {
+        "name": "فترة الركود"
+      }
+    ]
+  },
+  "data": []
+}

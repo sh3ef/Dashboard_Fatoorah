@@ -1,0 +1,31 @@
+{
+  "metadata": {
+    "timestamp": "2025-04-27 12:24:10",
+    "description": "Top suppliers by outstanding amount due to them",
+    "frequency": "Daily",
+    "title": " Suppliers by Outstanding Amount (Top 20)",
+    "chart_type": "bar",
+    "x_axis": {
+      "name": "user_id",
+      "type": "Category",
+      "title": "Supplier (ID)"
+    },
+    "y_axis": {
+      "name": "outstanding_amount",
+      "type": "Number",
+      "title": "Outstanding Amount"
+    },
+    "series": [
+      {
+        "name": "Amount",
+        "color": "value-based"
+      }
+    ]
+  },
+  "data": [
+    {
+      "Supplier (ID)": "200.0",
+      "Outstanding Amount": 5060.0
+    }
+  ]
+}
