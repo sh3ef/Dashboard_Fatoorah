@@ -1,0 +1,14 @@
+fastapi
+uvicorn
+sqlalchemy
+mysql-connector-python
+numpy==1.26.4
+pandas==2.2.2
+holidays
+pmdarima==2.0.4
+statsmodels==0.14.2
+pydantic
+pydantic-settings
+plotly
+streamlit  
+requests

@@ -1,0 +1,41 @@
+# Git files and folders
+.git
+.gitignore
+
+# Python virtual environment folders
+.venv
+venv
+env
+*/venv/
+*/.venv/
+*/env/
+
+# Python cache files and compiled files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# IDE/Editor configuration folders
+.vscode/
+.idea/
+
+# Operating System generated files
+.DS_Store
+
+# Log files and folders
+*.log
+*.logs
+logs/
+Log/
+
+# Environment variables file (CRITICAL: DO NOT INCLUDE IN IMAGE)
+.env
+*.env.*
+
+
+data/client_results/
+
+tests/
+*.test.py
+pytest.ini
+
