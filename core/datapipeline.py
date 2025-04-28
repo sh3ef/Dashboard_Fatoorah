@@ -35,6 +35,7 @@ try:
     MONTHLY_FORECASTING_AVAILABLE = True
     logger.info(f"Imported Monthly FORECAST_DATE_COL as '{FORECAST_DATE_COL_MONTHLY}'")
 except ImportError as import_err_monthly:
+    logger = logging.getLogger(__name__) # Corrected logger access
     logger.error(f"Failed to import monthly feature_engineering or forecasting: {import_err_monthly}. Monthly forecasting disabled.")
     def generate_monthly_features(ts, max_lag=12): logging.warning("generate_monthly_features (dummy): Module not found."); return None
     def train_and_forecast_monthly(df, horizon=12, seasonal=12): logging.warning("train_and_forecast_monthly (dummy): Module not found."); return pd.DataFrame()
@@ -43,15 +44,20 @@ except ImportError as import_err_monthly:
 
 # --- تحديد اسم عمود التاريخ الموحد للاستخدام في المخرجات النهائية ---
 try:
-    from core.monthly_forecasting import DATE_COLUMN_OUTPUT as FORECAST_DATE_COL
-    logger.info(f"Using FORECAST_DATE_COL '{FORECAST_DATE_COL}' from monthly_forecasting.")
-except ImportError:
-    try:
+    # Attempt to use the standard output column name from forecasting modules
+    # Prefer monthly if available, else daily
+    if MONTHLY_FORECASTING_AVAILABLE:
+        from core.monthly_forecasting import DATE_COLUMN_OUTPUT as FORECAST_DATE_COL
+        logger.info(f"Using FORECAST_DATE_COL '{FORECAST_DATE_COL}' from monthly_forecasting.")
+    elif FORECASTING_AVAILABLE:
         from core.forecasting import DATE_COLUMN_OUTPUT as FORECAST_DATE_COL
-        logger.warning(f"Using FORECAST_DATE_COL '{FORECAST_DATE_COL}' from daily forecasting (monthly import failed).")
-    except ImportError:
-        FORECAST_DATE_COL = 'date' # تعيين الافتراضي
-        logger.error(f"Failed to import DATE_COLUMN_OUTPUT from both forecasting modules. Using default '{FORECAST_DATE_COL}'.")
+        logger.info(f"Using FORECAST_DATE_COL '{FORECAST_DATE_COL}' from daily_forecasting.")
+    else:
+        FORECAST_DATE_COL = 'date' # Default if neither is available
+        logger.warning(f"Using default FORECAST_DATE_COL '{FORECAST_DATE_COL}' as forecasting modules failed to import it.")
+except ImportError:
+     FORECAST_DATE_COL = 'date' # تعيين الافتراضي في حالة فشل الاستيراد تماماً
+     logger.error(f"Failed to import DATE_COLUMN_OUTPUT from both forecasting modules. Using default '{FORECAST_DATE_COL}'.")
 
 
 # --- Pydantic Model Imports ---
@@ -594,6 +600,17 @@ class DataPipeline:
                 logger.error("Daily feature engineering failed or produced empty DataFrame. Skipping daily forecast.")
                 return
 
+            # --- *** START MODIFICATION: Minimum Observations for Daily Forecast *** ---
+            min_daily_obs = config.analysis_params.get('min_daily_obs_for_forecast', 360) # Get from config
+            if len(features_df_daily) < min_daily_obs:
+                logger.warning(
+                    f"Daily historical data ({len(features_df_daily)} days after feature eng.) "
+                    f"is less than the required minimum ({min_daily_obs}). Skipping daily forecast."
+                )
+                self.forecast_data = pd.DataFrame() # Ensure it's empty
+                return # Exit the forecasting process
+            # --- *** END MODIFICATION *** ---
+
             logger.info(f"Daily features generated successfully. Shape: {features_df_daily.shape}")
             logger.info(f"Calling train_and_forecast (Daily - Horizon={self.forecast_horizon_daily}, Seasonality={self.seasonal_period_daily})...")
             forecast_result_daily = train_and_forecast(
@@ -610,7 +627,7 @@ class DataPipeline:
                 self.forecast_data = forecast_result_daily
             else:
                 logger.info(f"Daily forecasts generated successfully. Shape: {forecast_result_daily.shape}")
-                required_cols = [FORECAST_DATE_COL, 'forecast', 'lower_ci', 'upper_ci']
+                required_cols = [FORECAST_DATE_COL, 'forecast', 'lower_ci', 'upper_ci'] # Use constant from top
                 if not all(col in forecast_result_daily.columns for col in required_cols):
                     missing_cols = list(set(required_cols) - set(forecast_result_daily.columns))
                     logger.error(f"Daily forecast DataFrame is missing columns: {missing_cols}")
@@ -671,7 +688,7 @@ class DataPipeline:
                  self.monthly_avg_invoice_forecast = forecast_result_monthly
             else:
                  logger.info(f"Monthly forecasts generated successfully. Shape: {forecast_result_monthly.shape}")
-                 required_cols = [FORECAST_DATE_COL, 'forecast', 'lower_ci', 'upper_ci']
+                 required_cols = [FORECAST_DATE_COL, 'forecast', 'lower_ci', 'upper_ci'] # Use constant from top
                  if not all(col in forecast_result_monthly.columns for col in required_cols):
                       missing_cols = list(set(required_cols) - set(forecast_result_monthly.columns))
                       logger.error(f"Monthly forecast DataFrame is missing columns: {missing_cols}")
@@ -1158,138 +1175,6 @@ class DataPipeline:
             logger.error(f"Error preparing {fig_key} data (lang={lang}): {e}", exc_info=True)
             return ChartData(metadata=metadata, data=[])
 
-    # --- START: Corrected _prepare_fig6_data (Original Logic + Category Addition) ---
-    def _prepare_fig6_data(self, pareto_data: Optional[pd.DataFrame], lang: str) -> Optional[ChartData]:
-        """
-        يُعد بيانات Pareto (الشكل 6) للواجهة الأمامية، مع إضافة فئة النسبة المئوية
-        للسماح بتلوين الخط في الواجهة الأمامية. (نسخة تعتمد على الأصل)
-
-        Args:
-            pareto_data (Optional[pd.DataFrame]): DataFrame يحتوي على بيانات Pareto المحسوبة
-                                                  (يجب أن يحتوي على 'name', 'sales_quantity', 'cumulative_percentage').
-            lang (str): رمز اللغة للترجمة ('ar' أو 'en').
-
-        Returns:
-            Optional[ChartData]: كائن ChartData يحتوي على metadata والبيانات المجهزة للرسم،
-                                 أو None إذا كانت نماذج Pydantic غير مستوردة.
-        """
-        fig_key = 'fig6'
-        logger.info(f"[{fig_key}] Lang '{lang}': Preparing figure (Original Logic + Category)...")
-
-        if not MODELS_IMPORTED:
-            logger.error(f"[{fig_key}] Pydantic models not imported.")
-            return None
-
-        # --- Metadata Definition (unchanged from original) ---
-        series_info_structure = [
-            {'internal_name': 'sales_quantity', 'title_key': 'sales', 'color': 'cornflowerblue', 'type': ChartType.BAR}, # Fixed color for bars
-            {'internal_name': 'cumulative_percentage', 'title_key': 'cumulative', 'color': 'red', 'type': ChartType.LINE} # Base color for line (frontend will override)
-        ]
-        # Use generic axis titles by omitting x_title_key and y_title_key
-        metadata = self._get_chart_metadata(
-            fig_key, lang, ChartType.COMBO,
-            x_name='name', x_type_key='category', # x_title_key removed
-            y_name='sales_quantity', y_type_key='number', # y_title_key removed
-            series_info=series_info_structure
-        )
-        # Add secondary axis info manually if needed (or enhance helper)
-        y2_title = get_translation(lang, f'{fig_key}.y2_axis.title', 'Cumulative %')
-        # metadata.y2_axis = AxisInfo(name='cumulative_percentage', type=get_translation(lang, 'axis_types.number', 'Number'), title=y2_title) # Example
-
-        # --- Input Data Validation ---
-        if pareto_data is None or pareto_data.empty:
-            logger.warning(f"[{fig_key}] Input 'pareto_data' is missing or empty.")
-            return ChartData(metadata=metadata, data=[])
-
-        logger.debug(f"[{fig_key}] Received 'pareto_data' shape: {pareto_data.shape}. Columns: {pareto_data.columns.tolist()}")
-        required_cols = ['name', 'sales_quantity', 'cumulative_percentage']
-        if not all(c in pareto_data.columns for c in required_cols):
-            missing_cols_list = [c for c in required_cols if c not in pareto_data.columns]
-            logger.error(f"[{fig_key}] Input 'pareto_data' missing required columns: {missing_cols_list}")
-            return ChartData(metadata=metadata, data=[])
-
-        try:
-            # --- 1. Prepare Original Data Structure ---
-            pareto = pareto_data.copy() # Work on a copy
-            x_axis_title_display = metadata.x_axis.title # Use translated title from metadata
-            sales_series_name = next((s.name for s in metadata.series if s.type == ChartType.BAR), 'Sales Quantity')
-            cum_series_name = next((s.name for s in metadata.series if s.type == ChartType.LINE), 'Cumulative %')
-
-            # Rename columns for the final output dictionary structure
-            data_df = pareto.rename(columns={
-                'name': x_axis_title_display,
-                'sales_quantity': sales_series_name,
-                'cumulative_percentage': cum_series_name
-            })
-
-            # Select only the necessary columns with translated names
-            # Keep the original numeric cumulative percentage for classification
-            data_df_final = data_df[[x_axis_title_display, sales_series_name, cum_series_name]].copy()
-            # Make sure to copy the original numeric column *before* potential renaming
-            data_df_final['original_cumulative'] = pareto['cumulative_percentage'].copy()
-
-
-            # --- 2. Define Bins and Labels for Percentage Category ---
-            bins = list(np.arange(0, 80.1, 10))
-            if not bins or bins[-1] < 80: bins.append(80.1)
-            bins = sorted(list(set(bins)))
-            labels = [f"{int(bins[i])}-{int(bins[i+1])}%" for i in range(len(bins)-1)] if len(bins) >= 2 else []
-            cat_key_json = "percentage_category" # Key name for the JSON output
-
-            # --- 3. Calculate Category and Add to DataFrame ---
-            if labels:
-                 # Ensure original cumulative is numeric before using cut
-                 data_df_final['original_cumulative'] = pd.to_numeric(data_df_final['original_cumulative'], errors='coerce')
-                 # Apply pd.cut safely
-                 data_df_final[cat_key_json] = pd.cut(data_df_final['original_cumulative'],
-                                                     bins=bins,
-                                                     labels=labels,
-                                                     right=True,
-                                                     include_lowest=True)
-                 # Handle potential NaNs from conversion or if value was outside bins
-                 data_df_final[cat_key_json] = data_df_final[cat_key_json].cat.add_categories('Other').fillna('Other')
-                 data_df_final[cat_key_json] = data_df_final[cat_key_json].astype(str)
-                 logger.debug(f"[{fig_key}] Categories calculated using bins: {bins}")
-            else:
-                 data_df_final[cat_key_json] = 'Other' # Assign default if no labels
-                 logger.warning(f"[{fig_key}] No labels created for percentage categories.")
-
-            # --- 4. Convert to List of Dictionaries and Clean ---
-            # Drop the temporary numeric column before converting
-            logger.debug(f"[{fig_key}] Columns before final dict conversion: {data_df_final.columns.tolist()}")
-            data_list = data_df_final.drop(columns=['original_cumulative']).to_dict(orient='records')
-
-            # Clean data types (especially cumulative percentage rounding)
-            cleaned_data = []
-            for row in data_list:
-                cleaned_row = {}
-                for k, v in row.items():
-                    if pd.isna(v):
-                        cleaned_row[k] = None
-                    elif k == cum_series_name: # Round the display cumulative percentage
-                        try:
-                            cleaned_row[k] = round(float(v), 2)
-                        except (ValueError, TypeError):
-                             cleaned_row[k] = str(v) # Keep as string if not numeric
-                    elif isinstance(v, (int, float, np.number)):
-                        cleaned_row[k] = float(v) # Ensure other numbers are float
-                    else:
-                        cleaned_row[k] = str(v) # Keep others as string
-                cleaned_data.append(cleaned_row)
-
-            logger.info(f"[{fig_key}] Prepared data with categories. Output length: {len(cleaned_data)}")
-
-            if not cleaned_data and len(pareto_data) > 0:
-                 logger.error(f"[{fig_key}] Data list became empty unexpectedly after processing {len(pareto_data)} initial rows!")
-                 return ChartData(metadata=metadata, data=[])
-
-            return ChartData(metadata=metadata, data=cleaned_data)
-
-        except Exception as e:
-            logger.error(f"[{fig_key}] Error preparing data (lang={lang}): {e}", exc_info=True)
-            return ChartData(metadata=metadata, data=[])
-    # --- END: Corrected _prepare_fig6_data ---
-
     def _prepare_fig7_data(self, product_flow: Optional[pd.DataFrame], lang: str) -> Optional[ChartData]:
         fig_key = 'fig7'
         if not MODELS_IMPORTED: logger.error(f"{fig_key} (lang={lang}): Pydantic models not imported."); return None
@@ -1666,7 +1551,12 @@ class DataPipeline:
                         file_path = client_dir / f"{fig_name}_{lang}.json"
                         try:
                             with open(file_path, "w", encoding='utf-8') as f:
-                                f.write(chart_data.model_dump_json(indent=2, exclude_none=True))
+                                # Use model_dump_json if available (Pydantic v2+)
+                                if hasattr(chart_data, 'model_dump_json'):
+                                    f.write(chart_data.model_dump_json(indent=2, exclude_none=True))
+                                else:
+                                    # Fallback for older Pydantic or dummy class
+                                    json.dump(chart_data.__dict__, f, indent=2, ensure_ascii=False) # Use __dict__ as approximation
                             logger.debug(f"Saved {file_path.name} ({prep_time:.3f}s)")
                         except Exception as e_write:
                             logger.error(f"Failed to write {file_path}: {e_write}")
@@ -1707,16 +1597,17 @@ class DataPipeline:
 
             daily_forecast_results = pd.DataFrame()
             if FORECASTING_AVAILABLE:
-                self._run_forecasting()
+                self._run_forecasting() # This now includes the 360-day check internally
                 daily_forecast_results = self.forecast_data
             else: logger.warning("Daily forecasting modules unavailable. Skipping.")
 
             monthly_forecast_results = pd.DataFrame()
             if MONTHLY_FORECASTING_AVAILABLE:
-                self._run_monthly_forecasting()
+                self._run_monthly_forecasting() # This already has the 12-month check internally
                 monthly_forecast_results = self.monthly_avg_invoice_forecast
             else: logger.warning("Monthly forecasting modules unavailable. Skipping.")
 
+            # Call _save_results_to_disk to save JSON files as before
             self._save_results_to_disk(client_id, analysis_results, daily_forecast_results, monthly_forecast_results)
 
             end_run_time = time.time()
