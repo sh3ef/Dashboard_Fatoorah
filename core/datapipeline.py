@@ -1,9 +1,7 @@
-# core/datapipeline.py
+# core/datapipeline.py - V5.4 - Fill missing dates in fig11/fig12 actual data
 import pandas as pd
 import numpy as np
-# Removed plotly imports as figures are not generated here, only data
 from datetime import datetime, timedelta
-# --- Use config directly for analysis params ---
 from core.config import config # Import updated settings
 import logging
 import os
@@ -1060,6 +1058,43 @@ class DataPipeline:
             return ChartData(metadata=metadata, data=data)
         except Exception as e: logger.error(f"Error preparing {fig_key} data (lang={lang}): {e}", exc_info=True); return ChartData(metadata=metadata, data=[])
 
+    # --- START: Corrected _prepare_fig6_data (Original Logic + Category Addition) ---
+    def _prepare_fig6_data(self, pareto_data: Optional[pd.DataFrame], lang: str) -> Optional[ChartData]:
+        fig_key = 'fig6'
+        logger.info(f"[{fig_key}] Lang '{lang}': Preparing figure (Original Logic + Category)...")
+        if not MODELS_IMPORTED: logger.error(f"[{fig_key}] Pydantic models not imported."); return None
+        series_info_structure = [{'internal_name': 'sales_quantity', 'title_key': 'sales', 'color': 'cornflowerblue', 'type': ChartType.BAR}, {'internal_name': 'cumulative_percentage', 'title_key': 'cumulative', 'color': 'red', 'type': ChartType.LINE}]
+        metadata = self._get_chart_metadata(fig_key, lang, ChartType.COMBO, x_name='name', y_name='sales_quantity', series_info=series_info_structure)
+        y2_title = get_translation(lang, f'{fig_key}.y2_axis.title', 'Cumulative %')
+        if pareto_data is None or pareto_data.empty: logger.warning(f"[{fig_key}] Input 'pareto_data' is missing or empty."); return ChartData(metadata=metadata, data=[])
+        required_cols = ['name', 'sales_quantity', 'cumulative_percentage'];
+        if not all(c in pareto_data.columns for c in required_cols): logger.error(f"[{fig_key}] Input 'pareto_data' missing required columns: {[c for c in required_cols if c not in pareto_data.columns]}"); return ChartData(metadata=metadata, data=[])
+        try:
+            pareto = pareto_data.copy(); x_axis_title_display = metadata.x_axis.title; sales_series_name = next((s.name for s in metadata.series if s.type == ChartType.BAR), 'Sales Quantity'); cum_series_name = next((s.name for s in metadata.series if s.type == ChartType.LINE), 'Cumulative %')
+            data_df = pareto.rename(columns={'name': x_axis_title_display, 'sales_quantity': sales_series_name, 'cumulative_percentage': cum_series_name})
+            data_df_final = data_df[[x_axis_title_display, sales_series_name, cum_series_name]].copy(); data_df_final['original_cumulative'] = pareto['cumulative_percentage'].copy()
+            bins = list(np.arange(0, 80.1, 10));
+            if not bins or bins[-1] < 80: bins.append(80.1); bins = sorted(list(set(bins))); labels = [f"{int(bins[i])}-{int(bins[i+1])}%" for i in range(len(bins)-1)] if len(bins) >= 2 else []; cat_key_json = "percentage_category"
+            if labels:
+                 data_df_final['original_cumulative'] = pd.to_numeric(data_df_final['original_cumulative'], errors='coerce')
+                 data_df_final[cat_key_json] = pd.cut(data_df_final['original_cumulative'], bins=bins, labels=labels, right=True, include_lowest=True)
+                 data_df_final[cat_key_json] = data_df_final[cat_key_json].cat.add_categories('Other').fillna('Other').astype(str)
+            else: data_df_final[cat_key_json] = 'Other'
+            data_list = data_df_final.drop(columns=['original_cumulative']).to_dict(orient='records'); cleaned_data = []
+            for row in data_list:
+                cleaned_row = {};
+                for k, v in row.items():
+                    if pd.isna(v): cleaned_row[k] = None
+                    elif k == cum_series_name: try: cleaned_row[k] = round(float(v), 2) except (ValueError, TypeError): cleaned_row[k] = str(v)
+                    elif isinstance(v, (int, float, np.number)): cleaned_row[k] = float(v)
+                    else: cleaned_row[k] = str(v)
+                cleaned_data.append(cleaned_row)
+            logger.info(f"[{fig_key}] Prepared data with categories. Output length: {len(cleaned_data)}")
+            if not cleaned_data and len(pareto_data) > 0: logger.error(f"[{fig_key}] Data list became empty!"); return ChartData(metadata=metadata, data=[])
+            return ChartData(metadata=metadata, data=cleaned_data)
+        except Exception as e: logger.error(f"[{fig_key}] Error preparing data (lang={lang}): {e}", exc_info=True); return ChartData(metadata=metadata, data=[])
+    # --- END: Corrected _prepare_fig6_data ---
+
     def _prepare_fig7_data(self, product_flow: Optional[pd.DataFrame], lang: str) -> Optional[ChartData]:
         fig_key = 'fig7'
         if not MODELS_IMPORTED: logger.error(f"{fig_key} (lang={lang}): Pydantic models not imported."); return None
@@ -1102,18 +1137,12 @@ class DataPipeline:
     def _prepare_fig11_data(self, daily_forecast: Optional[pd.DataFrame], lang: str) -> Optional[ChartData]:
         fig_key = 'fig11'
         if not MODELS_IMPORTED: logger.error(f"{fig_key} (lang={lang}): Pydantic models not imported."); return None
-        series_info = [
-             {'internal_name': 'actual', 'title_key': 'actual', 'color': 'blue'},
-             {'internal_name': 'forecast', 'title_key': 'forecast', 'color': 'red'},
-             {'internal_name': 'ci', 'title_key': 'ci', 'color': 'rgba(255, 0, 0, 0.15)'}
-         ]
+        series_info = [{'internal_name': 'actual', 'title_key': 'actual', 'color': 'blue'},{'internal_name': 'forecast', 'title_key': 'forecast', 'color': 'red'},{'internal_name': 'ci', 'title_key': 'ci', 'color': 'rgba(255, 0, 0, 0.15)'}]
         metadata = self._get_chart_metadata(fig_key, lang, ChartType.LINE, x_name=DATE_COLUMN_OUTPUT, y_name='value', series_info=series_info)
         combined_data = []; actual_df = pd.DataFrame()
         try:
             sid = self.processed_data.get('sale_invoices_details')
             si = self.processed_data.get('sale_invoices')
-
-            # Prepare Actual Data with Zeros for Missing Days
             if sid is not None and not sid.empty and si is not None and not si.empty and 'created_at_dt' in si.columns:
                 sid_total_col = config.required_columns['sale_invoices_details'][4]
                 if 'created_at_per_day' in sid.columns and sid_total_col in sid.columns:
@@ -1128,7 +1157,7 @@ class DataPipeline:
                         daily_actual_aggregated = daily_actual_aggregated.set_index('created_at_per_day')
                         actual_df_complete = full_range_df.merge(daily_actual_aggregated, left_index=True, right_index=True, how='left')
                         actual_df_complete.rename(columns={sid_total_col: 'value'}, inplace=True)
-                        actual_df_complete['value'] = actual_df_complete['value'].fillna(0)
+                        actual_df_complete['value'] = actual_df_complete['value'].fillna(0) # Fill missing days with 0
                         actual_df_complete = actual_df_complete.reset_index().rename(columns={'index': DATE_COLUMN_OUTPUT})
                         actual_df_complete[DATE_COLUMN_OUTPUT] = pd.to_datetime(actual_df_complete[DATE_COLUMN_OUTPUT]).dt.strftime('%Y-%m-%d')
                         logger.info(f"[{fig_key}] Actual daily sales data prepared with {len(actual_df_complete)} days (including zeros).")
@@ -1140,7 +1169,6 @@ class DataPipeline:
                 else: logger.warning(f"[{fig_key}] Missing required columns for aggregation ('created_at_per_day' or '{sid_total_col}').")
             else: logger.warning(f"[{fig_key}] Processed SID or SI data is missing or empty. Cannot calculate actual daily sales.")
 
-            # Combine with forecast data
             if daily_forecast is not None and not daily_forecast.empty:
                 required = [DATE_COLUMN_OUTPUT, 'forecast', 'lower_ci', 'upper_ci']
                 if all(col in daily_forecast.columns for col in required):
@@ -1151,7 +1179,7 @@ class DataPipeline:
                     combined_data.extend(fc_df.to_dict(orient='records'))
                     logger.info(f"[{fig_key}] Added {len(fc_df)} forecast points.")
                 else: logger.warning(f"{fig_key}: Daily forecast DataFrame missing required columns.")
-            else: logger.info(f"[{fig_key}] No forecast data available to combine.")
+            else: logger.info(f"[{fig_key}] No forecast data available.")
 
             if not combined_data: logger.warning(f"{fig_key} (lang={lang}): No actual or forecast data available."); return ChartData(metadata=metadata, data=[])
             combined_data = sorted(combined_data, key=lambda x: x.get(DATE_COLUMN_OUTPUT, ''))
@@ -1162,30 +1190,21 @@ class DataPipeline:
     def _prepare_fig12_data(self, monthly_avg_ts: Optional[pd.Series], monthly_forecast: Optional[pd.DataFrame], lang: str) -> Optional[ChartData]:
         fig_key = 'fig12'
         if not MODELS_IMPORTED: logger.error(f"{fig_key} (lang={lang}): Pydantic models not imported."); return None
-        series_info = [
-             {'internal_name': 'actual', 'title_key': 'actual', 'color': 'royalblue'},
-             {'internal_name': 'forecast', 'title_key': 'forecast', 'color': 'firebrick'},
-             {'internal_name': 'ci', 'title_key': 'ci', 'color': 'rgba(255, 100, 100, 0.15)'}
-         ]
+        series_info = [{'internal_name': 'actual', 'title_key': 'actual', 'color': 'royalblue'},{'internal_name': 'forecast', 'title_key': 'forecast', 'color': 'firebrick'},{'internal_name': 'ci', 'title_key': 'ci', 'color': 'rgba(255, 100, 100, 0.15)'}]
         metadata = self._get_chart_metadata(fig_key, lang, ChartType.LINE, x_name=DATE_COLUMN_OUTPUT, y_name='value', series_info=series_info)
         combined_data = []; actual_df = pd.DataFrame()
         try:
-            # Prepare Actual Data with Zeros for Missing Months
             if monthly_avg_ts is not None and not monthly_avg_ts.empty:
                 logger.debug(f"[{fig_key}] Preparing complete actual monthly average data...")
-                if not isinstance(monthly_avg_ts.index, pd.DatetimeIndex):
-                    monthly_avg_ts.index = pd.to_datetime(monthly_avg_ts.index)
-                # Ensure MS frequency and fill potential gaps *before* getting min/max
-                monthly_avg_ts = monthly_avg_ts.asfreq('MS')
+                if not isinstance(monthly_avg_ts.index, pd.DatetimeIndex): monthly_avg_ts.index = pd.to_datetime(monthly_avg_ts.index)
+                monthly_avg_ts = monthly_avg_ts.asfreq('MS') # Ensure MS frequency
                 min_date = monthly_avg_ts.index.min(); max_date = monthly_avg_ts.index.max()
-                if pd.isna(min_date) or pd.isna(max_date): # Handle case where series becomes all NaNs
-                    logger.warning(f"[{fig_key}] Could not determine date range for monthly data.")
-                    complete_ts = pd.Series(dtype='float64')
+                if pd.isna(min_date) or pd.isna(max_date):
+                    logger.warning(f"[{fig_key}] Could not determine date range for monthly data."); complete_ts = pd.Series(dtype='float64')
                 else:
                     all_months_idx = pd.date_range(start=min_date, end=max_date, freq='MS')
                     complete_ts = monthly_avg_ts.reindex(all_months_idx).fillna(0) # Fill NaNs with 0
                 logger.info(f"[{fig_key}] Actual monthly data prepared with {len(complete_ts)} months (including zeros).")
-
                 if not complete_ts.empty:
                     actual_df = complete_ts.reset_index().rename(columns={'index': 'sort_date', complete_ts.name or 0: 'value'})
                     actual_df['type'] = 'actual'; actual_df['lower_ci'] = None; actual_df['upper_ci'] = None
@@ -1194,7 +1213,6 @@ class DataPipeline:
                     combined_data.extend(actual_df[[DATE_COLUMN_OUTPUT, 'value', 'type', 'lower_ci', 'upper_ci']].to_dict(orient='records'))
             else: logger.warning(f"[{fig_key}] monthly_avg_invoice_ts is missing or empty.")
 
-            # Combine with forecast data
             if monthly_forecast is not None and not monthly_forecast.empty:
                 required = [DATE_COLUMN_OUTPUT, 'forecast', 'lower_ci', 'upper_ci']
                 if all(c in monthly_forecast.columns for c in required):
