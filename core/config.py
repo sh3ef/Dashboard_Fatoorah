@@ -4,9 +4,7 @@ from typing import Dict, List, Optional, Any
 from enum import Enum
 import os
 from pathlib import Path
-import logging # Added logging for potential issues
-# core/config.py
-# ... other imports ...
+import logging
 
 print("=" * 60)
 print("DEBUG: Checking Project Root Directory Contents")
@@ -48,10 +46,8 @@ if not logger.handlers:
 
 # --- Determine Project Root and .env File Path ---
 try:
-    # Assumes config.py is in the 'core' directory, so parent.parent is the project root
     PROJECT_ROOT = Path(__file__).resolve().parent.parent
 except NameError:
-    # Fallback if __file__ is not defined (e.g., interactive environments)
     PROJECT_ROOT = Path('.').resolve()
     logger.warning(f"__file__ not defined, assuming project root is current working directory: {PROJECT_ROOT}")
 
@@ -61,13 +57,12 @@ ENV_FILE_PATH = PROJECT_ROOT / ".env"
 print("-" * 50)
 print(f"DEBUG: Calculated PROJECT_ROOT: {PROJECT_ROOT}")
 print(f"DEBUG: Calculated ENV_FILE_PATH: {ENV_FILE_PATH}")
-env_exists = ENV_FILE_PATH.is_file() # Check if it's specifically a file
+env_exists = ENV_FILE_PATH.is_file()
 print(f"DEBUG: Does .env file exist at this path? {env_exists}")
 if not env_exists:
     print("DEBUG: WARNING - .env file not found at the calculated path. Defaults or environment variables will be used.")
 print("-" * 50)
 # --- End Debugging ---
-
 
 # --- Settings Models ---
 
@@ -86,7 +81,6 @@ class VisualizationConfig(BaseSettings):
 
 class DatabaseSettings(BaseSettings):
     """Database connection settings."""
-    # Define defaults which are used if not found in .env or environment variables
     DB_USER: str = "default_user"
     DB_PASSWORD: str = "default_password"
     DB_HOST: str = "localhost"
@@ -98,24 +92,21 @@ class DatabaseSettings(BaseSettings):
         return f"mysql+mysqlconnector://{self.DB_USER}:{self.DB_PASSWORD}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
 
     model_config = SettingsConfigDict(
-        # Explicitly point to the calculated .env file path if it exists
         env_file=str(ENV_FILE_PATH) if env_exists else None,
         env_file_encoding='utf-8',
-        extra='ignore' # Ignore extra environment variables
+        extra='ignore'
     )
 
 class AuthSettings(BaseSettings):
     """Authentication settings."""
-    # Secrets should ideally come only from .env or environment variables
-    SECRET_KEY: str = "!!!_CHANGE_IN_ENV_OR_DOTENV_!!!" # Provide a default only for structure clarity
+    SECRET_KEY: str = "!!!_CHANGE_IN_ENV_OR_DOTENV_!!!"
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
 
     model_config = SettingsConfigDict(
-        # Load from the same .env file if auth settings are there
         env_file=str(ENV_FILE_PATH) if env_exists else None,
         env_file_encoding='utf-8',
-        env_prefix='AUTH_', # e.g., expect AUTH_SECRET_KEY in .env/environment
+        env_prefix='AUTH_',
         extra='ignore'
     )
 
@@ -124,7 +115,6 @@ class DataPipelineConfig(BaseSettings):
     db: DatabaseSettings = DatabaseSettings()
     auth: AuthSettings = AuthSettings()
 
-    # Visualization update configurations (might be better as constants if not changed often)
     update_config: Dict[Frequency, VisualizationConfig] = {
         Frequency.DAILY: VisualizationConfig(visualizations=['fig11', 'fig17']),
         Frequency.WEEKLY: VisualizationConfig(visualizations=['fig1', 'fig4', 'fig9']),
@@ -132,7 +122,6 @@ class DataPipelineConfig(BaseSettings):
         Frequency.QUARTERLY: VisualizationConfig(refresh_day=1, visualizations=['fig14'])
     }
 
-    # Required columns for data validation (using internal/database names)
     required_columns: Dict[str, List[str]] = {
         'products': ['id', 'name', 'buyPrice', 'salePrice', 'quantity', 'client_id'],
         'sale_invoices': ['id', 'created_at', 'totalPrice', 'client_id'],
@@ -140,7 +129,6 @@ class DataPipelineConfig(BaseSettings):
         'invoice_deferreds': ['invoice_type', 'status', 'amount', 'paid_amount', 'user_id', 'client_id']
     }
 
-    # Date parsing settings (internal column names)
     date_settings: Dict[str, Any] = {
         'date_columns': {
             'sale_invoices': ['created_at'],
@@ -148,13 +136,12 @@ class DataPipelineConfig(BaseSettings):
         }
     }
 
-    # Parameters for data analysis steps
     analysis_params: Dict[str, Any] = {
         'efficiency_bins': [0, 0.8, 1.2, float('inf')],
-        'efficiency_labels': ['Undersupplied', 'Balanced', 'Oversupplied'], # Internal labels
+        'efficiency_labels': ['Undersupplied', 'Balanced', 'Oversupplied'],
         'stagnant_periods': {
-            'bins': [90, 180, 365, float('inf')], # Days thresholds
-            'labels': ['3-6 months', '6-12 months', '>1 year'], # Internal labels
+            'bins': [90, 180, 365, float('inf')],
+            'labels': ['3-6 months', '6-12 months', '>1 year'],
         },
         'restock_threshold': 10,
         'pareto_threshold': 80,
@@ -163,18 +150,16 @@ class DataPipelineConfig(BaseSettings):
         'forecast_horizon_monthly': 6,
         'seasonal_period_monthly': 12,
         'min_monthly_obs': 12,
+        'min_daily_obs_for_forecast': 360, # Minimum days needed for daily forecast
     }
 
 # --- Create the global config instance ---
-# This instance will be loaded based on the model_config definitions above
 config = DataPipelineConfig()
 
 # --- Final Debug Print (Check loaded values) ---
-# This will show the actual values being used by the application
 print("-" * 50)
 print("--- FINAL CONFIG CHECK (Loaded Values) ---")
 print(f"Loaded DB User: '{config.db.DB_USER}'")
-# Avoid printing full password in logs
 password_status = "***" if config.db.DB_PASSWORD and config.db.DB_PASSWORD != "default_password" else "(default or empty/not loaded)"
 print(f"Loaded DB Password Status: {password_status}")
 print(f"Loaded DB Host: '{config.db.DB_HOST}'")
@@ -183,6 +168,6 @@ print(f"Loaded DB Name: '{config.db.DB_NAME}'")
 print(f"Generated DB URL: '{config.db.get_db_url()}'")
 secret_key_status = "***" if config.auth.SECRET_KEY and config.auth.SECRET_KEY != "!!!_CHANGE_IN_ENV_OR_DOTENV_!!!" else "(default or empty/not loaded)"
 print(f"Loaded Auth Secret Key Status: {secret_key_status}")
+print(f"Min Daily Obs for Forecast: {config.analysis_params.get('min_daily_obs_for_forecast')}") # Added check
 print("--- END FINAL CONFIG CHECK ---")
 print("-" * 50)
-
