@@ -1,4 +1,4 @@
-# core/datapipeline.py - V5.4 - Fill missing dates in fig11/fig12 actual data
+# core/datapipeline.py
 import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
@@ -554,9 +554,10 @@ class DataPipeline:
                     monthly_avg.index = pd.to_datetime(monthly_avg.index + '-01')
                     if not monthly_avg.empty:
                         full_idx = pd.date_range(start=monthly_avg.index.min(), end=monthly_avg.index.max(), freq='MS')
-                        monthly_avg_ts_final = monthly_avg.reindex(full_idx).ffill().bfill()
+                        # Fill missing months with 0 for fig12 plotting requirement
+                        monthly_avg_ts_final = monthly_avg.reindex(full_idx).fillna(0) # This line ensures zero-filling
                         analysis_results['monthly_avg_invoice_ts'] = monthly_avg_ts_final
-                        logger.info("Monthly average invoice TS calculated and filled.")
+                        logger.info("Monthly average invoice TS calculated and filled (with 0 for missing months).")
                     else: logger.warning("Monthly TS calculation resulted in empty series."); analysis_results['monthly_avg_invoice_ts']=pd.Series(dtype='float64')
                 except Exception as e: logger.error(f"Error calculating Monthly Avg Invoice TS: {e}", exc_info=True); analysis_results['monthly_avg_invoice_ts']=pd.Series(dtype='float64')
             else: logger.warning("Skipping Monthly TS: Missing total price column."); analysis_results['monthly_avg_invoice_ts']=pd.Series(dtype='float64')
@@ -593,22 +594,14 @@ class DataPipeline:
                 logger.error("Daily feature engineering failed or produced empty DataFrame. Skipping daily forecast.")
                 return
 
-            # --- *** START MODIFICATION: Minimum Observations for Daily Forecast *** ---
             min_daily_obs = config.analysis_params.get('min_daily_obs_for_forecast', 360) # Get from config
-            # Use the original date column from feature engineering output for length check
-            # Assuming 'sale_date' is the primary date column after generate_features_df
-            if 'sale_date' not in features_df_daily.columns:
-                logger.error("Required 'sale_date' column missing from daily features DataFrame. Cannot check length.")
-                self.forecast_data = pd.DataFrame()
-                return
             if len(features_df_daily) < min_daily_obs:
                 logger.warning(
-                    f"Daily historical data ({len(features_df_daily)} days) " # Use length directly
+                    f"Daily historical data ({len(features_df_daily)} days after feature eng.) "
                     f"is less than the required minimum ({min_daily_obs}). Skipping daily forecast."
                 )
                 self.forecast_data = pd.DataFrame() # Ensure it's empty
                 return # Exit the forecasting process
-            # --- *** END MODIFICATION *** ---
 
             logger.info(f"Daily features generated successfully. Shape: {features_df_daily.shape}")
             logger.info(f"Calling train_and_forecast (Daily - Horizon={self.forecast_horizon_daily}, Seasonality={self.seasonal_period_daily})...")
@@ -626,8 +619,7 @@ class DataPipeline:
                 self.forecast_data = forecast_result_daily
             else:
                 logger.info(f"Daily forecasts generated successfully. Shape: {forecast_result_daily.shape}")
-                # Use the standard DATE_COLUMN_OUTPUT for checking columns
-                required_cols = [DATE_COLUMN_OUTPUT, 'forecast', 'lower_ci', 'upper_ci']
+                required_cols = [FORECAST_DATE_COL, 'forecast', 'lower_ci', 'upper_ci'] # Use FORECAST_DATE_COL
                 if not all(col in forecast_result_daily.columns for col in required_cols):
                     missing_cols = list(set(required_cols) - set(forecast_result_daily.columns))
                     logger.error(f"Daily forecast DataFrame is missing columns: {missing_cols}")
@@ -688,7 +680,7 @@ class DataPipeline:
                  self.monthly_avg_invoice_forecast = forecast_result_monthly
             else:
                  logger.info(f"Monthly forecasts generated successfully. Shape: {forecast_result_monthly.shape}")
-                 required_cols = [DATE_COLUMN_OUTPUT, 'forecast', 'lower_ci', 'upper_ci'] # Use standard output name
+                 required_cols = [FORECAST_DATE_COL, 'forecast', 'lower_ci', 'upper_ci'] # Use standard output name
                  if not all(col in forecast_result_monthly.columns for col in required_cols):
                       missing_cols = list(set(required_cols) - set(forecast_result_monthly.columns))
                       logger.error(f"Monthly forecast DataFrame is missing columns: {missing_cols}")
@@ -718,21 +710,17 @@ class DataPipeline:
         freq_display = get_translation(lang, f'frequencies.{freq_key}', freq_key.capitalize())
 
         x_axis_type = get_translation(lang, f'axis_types.{x_type_key}', x_type_key)
-        # --- *** CORRECTION: Use default lookup key if specific key is not provided *** ---
         x_axis_title_lookup = f'{fig_key}.x_axis.title' if x_title_key is None else f'{fig_key}.x_axis.{x_title_key}'
         x_axis_title = get_translation(lang, x_axis_title_lookup, default=get_translation(lang, f'{fig_key}.x_axis.title', x_name.replace('_', ' ').title())) # Fallback to generic title key if specific not found
 
         y_axis_type = get_translation(lang, f'axis_types.{y_type_key}', y_type_key)
-        # --- *** CORRECTION: Use default lookup key if specific key is not provided *** ---
         y_axis_title_lookup = f'{fig_key}.y_axis.title' if y_title_key is None else f'{fig_key}.y_axis.{y_title_key}'
         y_axis_title = get_translation(lang, y_axis_title_lookup, default=get_translation(lang, f'{fig_key}.y_axis.title', y_name.replace('_', ' ').title())) # Fallback to generic title key if specific not found
 
         generated_series: List[SeriesInfo] = []
         if series_info:
             for s_info in series_info:
-                # Check if s_info is a dictionary before accessing keys
                 if isinstance(s_info, dict):
-                    # Use specific title key if available, otherwise use internal name as key, fallback to title()
                     series_title_key = s_info.get("title_key", s_info.get("internal_name", ""))
                     series_title_lookup = f'{fig_key}.series.{series_title_key}'
                     series_name_loc = get_translation(lang, series_title_lookup, s_info.get('internal_name', '').replace('_', ' ').title())
@@ -743,7 +731,6 @@ class DataPipeline:
                             type=s_info.get('type')
                         )
                     )
-                # Handle cases where SeriesInfo objects might be passed directly (though the fix is to pass dicts)
                 elif isinstance(s_info, SeriesInfo):
                      logger.warning(f"Received SeriesInfo object instead of dict in _get_chart_metadata for {fig_key}. Using name directly.")
                      generated_series.append(s_info) # Append the object as is
@@ -761,7 +748,6 @@ class DataPipeline:
 
 
     # --- **** START: PREPARE FUNCTIONS **** ---
-    # --- Modified Prepare Functions to remove x_title_key/y_title_key where generic title is sufficient ---
 
     def _prepare_fig1_data(self, product_flow: Optional[pd.DataFrame], lang: str) -> Optional[ChartData]:
         fig_key = 'fig1'
@@ -771,10 +757,9 @@ class DataPipeline:
             {'internal_name': 'current_stock', 'title_key': 'stock', 'color': 'rgb(55, 83, 109)'},
             {'internal_name': 'sales_quantity', 'title_key': 'sales', 'color': 'rgb(26, 118, 255)'}
         ]
-        # Use generic keys 'title' from ar.json by removing x_title_key and y_title_key
         metadata = self._get_chart_metadata(fig_key, lang, ChartType.BAR,
-                                            x_name='name', x_type_key='category', # x_title_key removed
-                                            y_name='value', y_type_key='number', # y_title_key removed
+                                            x_name='name', x_type_key='category',
+                                            y_name='value', y_type_key='number',
                                             series_info=series_info)
 
         if product_flow is None or product_flow.empty:
@@ -791,7 +776,6 @@ class DataPipeline:
             top20 = pf.nlargest(20, 'sales_quantity')
             logger.debug(f"[{fig_key}] Top 20 shape: {top20.shape}")
 
-            # Use titles from metadata for renaming
             stock_series_name = next((s.name for s in metadata.series if s.name == get_translation(lang, 'fig1.series.stock', 'Stock')), 'Current Stock')
             sales_series_name = next((s.name for s in metadata.series if s.name == get_translation(lang, 'fig1.series.sales', 'Sales')), 'Sales')
             x_axis_title = metadata.x_axis.title
@@ -815,10 +799,9 @@ class DataPipeline:
             {'internal_name': 'current_stock', 'title_key': 'stock', 'color': 'lightblue', 'type': ChartType.BAR},
             {'internal_name': 'sales_quantity', 'title_key': 'sales', 'color': 'orange', 'type': ChartType.LINE}
         ]
-        # Use generic keys 'title' from ar.json
         metadata = self._get_chart_metadata(fig_key, lang, ChartType.COMBO,
-                                            x_name='name', x_type_key='category', # x_title_key removed
-                                            y_name='value', y_type_key='number', # y_title_key removed
+                                            x_name='name', x_type_key='category',
+                                            y_name='value', y_type_key='number',
                                             series_info=series_info)
 
         if product_flow is None or product_flow.empty:
@@ -835,7 +818,6 @@ class DataPipeline:
              top20_sales = pf.nlargest(20, 'sales_quantity')
              logger.debug(f"[{fig_key}] Top 20 shape: {top20_sales.shape}")
 
-             # Use titles from metadata
              stock_series = next((s.name for s in metadata.series if s.type == ChartType.BAR), 'Current Stock')
              sales_series = next((s.name for s in metadata.series if s.type == ChartType.LINE), 'Sales')
              x_axis_title = metadata.x_axis.title
@@ -858,14 +840,12 @@ class DataPipeline:
         restock_threshold = config.analysis_params.get('restock_threshold', 10)
         restock_thr_str = str(restock_threshold)
 
-        # Use generic keys 'title' from ar.json
         series_info = [{'internal_name': 'stock', 'title_key': 'stock', 'color': 'red'}]
         metadata = self._get_chart_metadata(fig_key, lang, ChartType.BAR,
-                                            x_name='name', x_type_key='category', # x_title_key removed
-                                            y_name='current_stock', y_type_key='number', # y_title_key removed
+                                            x_name='name', x_type_key='category',
+                                            y_name='current_stock', y_type_key='number',
                                             series_info=series_info)
 
-        # --- Replace placeholder titles with potentially translated ones ---
         metadata.title = get_translation(lang, f'{fig_key}.title', f'Products to Restock (<= {restock_thr_str})').replace("{threshold}", restock_thr_str)
         metadata.description = get_translation(lang, f'{fig_key}.description', f'Products with stock <= {restock_thr_str}').replace("{threshold}", restock_thr_str)
 
@@ -882,7 +862,6 @@ class DataPipeline:
             restock = pf[pf['current_stock'] <= restock_threshold].sort_values('current_stock', ascending=True)
             logger.debug(f"[{fig_key}] Restock DF shape: {restock.shape}")
 
-            # Use titles from metadata
             x_axis_title = metadata.x_axis.title
             y_axis_title = metadata.y_axis.title
 
@@ -902,36 +881,50 @@ class DataPipeline:
 
         col1_header = get_translation(lang, f'{fig_key}.columns.quantity', 'Quantity Sold')
         col2_header = get_translation(lang, f'{fig_key}.columns.num_products', 'Number of Products')
-        series_info = [{'internal_name':'quantity', 'title_key':'quantity'}, {'internal_name':'num_products', 'title_key':'num_products'}]
+
+        series_info = [
+            {'internal_name':'quantity', 'title_key':'quantity'},
+            {'internal_name':'num_products', 'title_key':'num_products'}
+        ]
         metadata = self._get_chart_metadata(fig_key, lang, ChartType.TABLE, series_info=series_info)
         metadata.series = [SeriesInfo(name=col1_header), SeriesInfo(name=col2_header)]
 
         if sale_invoices_details is None or sale_invoices_details.empty:
             logger.warning(f"{fig_key}: Sale invoice details missing or empty.");
-            return ChartData(metadata=metadata, data=[])
+            return ChartData(metadata=metadata, data=[]) # Return empty list for table data
 
         try:
             sid_proc = sale_invoices_details
             sid_prod_id_col = config.required_columns['sale_invoices_details'][1]
             sid_qty_col = config.required_columns['sale_invoices_details'][3]
 
+            logger.debug(f"{fig_key}: Checking required columns: {sid_prod_id_col}, {sid_qty_col}")
             if not (sid_prod_id_col in sid_proc.columns and sid_qty_col in sid_proc.columns):
                  logger.error(f"{fig_key}: Missing required columns '{sid_prod_id_col}' or '{sid_qty_col}' in SID.")
                  return ChartData(metadata=metadata, data=[])
 
+            logger.debug(f"{fig_key}: Calculating sales per product...")
             sales_per_product = sid_proc.groupby(sid_prod_id_col)[sid_qty_col].sum()
             sales_per_product = sales_per_product[sales_per_product > 0]
+            logger.debug(f"{fig_key}: Found {len(sales_per_product)} products with sales > 0.")
             if sales_per_product.empty:
                  logger.info(f"{fig_key}: No products with sales > 0 found for frequency table.")
                  return ChartData(metadata=metadata, data=[])
 
+            logger.debug(f"{fig_key}: Calculating sales frequency...")
             sales_freq = sales_per_product.value_counts().reset_index()
+            logger.debug(f"{fig_key}: Sales frequency DataFrame shape: {sales_freq.shape}")
+            logger.debug(f"{fig_key}: Sales frequency columns: {sales_freq.columns.tolist()}")
 
             if len(sales_freq.columns) == 2:
                 sales_freq.columns = [col1_header, col2_header]
+                logger.debug(f"{fig_key}: Renamed frequency columns to: {sales_freq.columns.tolist()}")
                 sales_freq_table_data = sales_freq.sort_values(by=col1_header, ascending=True).head(15)
+                logger.debug(f"{fig_key}: Shape after sorting and head(15): {sales_freq_table_data.shape}")
+
                 if not sales_freq_table_data.empty:
-                    table_data_list = sales_freq_table_data.to_dict(orient='records');
+                    logger.debug(f"{fig_key}: Preparing final table data list...")
+                    table_data_list = sales_freq_table_data.to_dict(orient='records')
                     table_data_list = [{k: (float(v) if isinstance(v, (int, float, np.number)) else str(v))
                                         for k, v in row.items()} for row in table_data_list]
                     logger.info(f"{fig_key}: Successfully prepared data list with {len(table_data_list)} rows.")
@@ -940,7 +933,8 @@ class DataPipeline:
                      logger.warning(f"{fig_key}: Frequency table is empty after sorting/head.")
                      return ChartData(metadata=metadata, data=[])
             else:
-                logger.error(f"{fig_key}: Unexpected number of columns ({len(sales_freq.columns)}) after value_counts. Expected 2.")
+                logger.error(f"{fig_key}: Unexpected number of columns ({len(sales_freq.columns)}) after calculating sales frequency value_counts. Expected 2.")
+                logger.error(f"{fig_key}: Columns found: {sales_freq.columns.tolist()}")
                 return ChartData(metadata=metadata, data=[])
         except Exception as e:
             logger.error(f"Error preparing {fig_key} data (lang={lang}): {e}", exc_info=True)
@@ -996,282 +990,639 @@ class DataPipeline:
             return ChartData(metadata=metadata, data=empty_pie_data_structure)
 
 
-    # --- Other Prepare Functions (2, 3, 5, 7, 10, 11, 12, 13, 15, 17) ---
-    # --- Fig 6 is moved below ---
+    # --- Other Prepare Functions ---
 
     def _prepare_fig2_data(self, product_flow: Optional[pd.DataFrame], lang: str) -> Optional[ChartData]:
         fig_key = 'fig2'
         if not MODELS_IMPORTED: logger.error(f"{fig_key} (lang={lang}): Pydantic models not imported."); return None
 
-        color_map = {'Undersupplied': '#ff7f0e', 'Balanced': '#2ca02c', 'Oversupplied': '#d62728', 'N/A': 'grey'}; series_pie_structure = []; temp_pf = product_flow if product_flow is not None else pd.DataFrame(); eff_labels = config.analysis_params.get('efficiency_labels', []) + ['N/A']
+        color_map = {'Undersupplied': '#ff7f0e', 'Balanced': '#2ca02c', 'Oversupplied': '#d62728', 'N/A': 'grey'}
+        series_pie_structure = []
+        temp_pf = product_flow if product_flow is not None else pd.DataFrame()
+        eff_labels = config.analysis_params.get('efficiency_labels', []) + ['N/A']
         if 'efficiency' in temp_pf.columns:
             for label in eff_labels:
-                if label in temp_pf['efficiency'].unique(): series_pie_structure.append({'internal_name': label, 'title_key': f'efficiency_labels.{label}', 'color': color_map.get(label, 'grey')})
-        metadata = self._get_chart_metadata(fig_key, lang, ChartType.PIE, x_name="category", y_name="value", series_info=series_pie_structure)
-        if product_flow is None or product_flow.empty: return ChartData(metadata=metadata, data={'labels': [], 'values': []})
+                if label in temp_pf['efficiency'].unique():
+                     series_pie_structure.append({'internal_name': label, 'title_key': f'efficiency_labels.{label}', 'color': color_map.get(label, 'grey')})
+
+        metadata = self._get_chart_metadata(fig_key, lang, ChartType.PIE,
+                                                 x_name="category", y_name="value", series_info=series_pie_structure)
+
+        if product_flow is None or product_flow.empty:
+            logger.warning(f"{fig_key} (lang={lang}): Product flow data missing.");
+            return ChartData(metadata=metadata, data={'labels': [], 'values': []}) # Return metadata with empty data
 
         try:
             pf = product_flow;
-            if 'efficiency' not in pf.columns: logger.error(f"{fig_key}: Missing 'efficiency' column."); return ChartData(metadata=metadata, data={'labels': [], 'values': []})
-            valid_cats_internal = config.analysis_params['efficiency_labels']; pf['efficiency'] = pd.Categorical(pf['efficiency'], categories=valid_cats_internal + ['N/A'], ordered=False); efficiency_counts = pf['efficiency'].value_counts()
-            if efficiency_counts.empty: logger.info(f"{fig_key}: No valid efficiency data."); return ChartData(metadata=metadata, data={'labels': [], 'values': []})
-            localized_labels = [get_translation(lang, f'efficiency_labels.{label}', label) for label in efficiency_counts.index]; values = efficiency_counts.values.tolist()
+            if 'efficiency' not in pf.columns:
+                 logger.error(f"{fig_key} (lang={lang}): Missing 'efficiency' column.")
+                 return ChartData(metadata=metadata, data={'labels': [], 'values': []})
+
+            valid_cats_internal = config.analysis_params['efficiency_labels'];
+            pf['efficiency'] = pd.Categorical(pf['efficiency'], categories=valid_cats_internal + ['N/A'], ordered=False)
+            efficiency_counts = pf['efficiency'].value_counts()
+
+            if efficiency_counts.empty:
+                logger.info(f"{fig_key} (lang={lang}): No valid efficiency data to display.")
+                return ChartData(metadata=metadata, data={'labels': [], 'values': []})
+
+            localized_labels = [get_translation(lang, f'efficiency_labels.{label}', label) for label in efficiency_counts.index]
+            values = efficiency_counts.values.tolist()
+
             data = {'labels': localized_labels, 'values': values, 'colors': [color_map.get(str(label), 'grey') for label in efficiency_counts.index]}
             return ChartData(metadata=metadata, data=data)
-        except Exception as e: logger.error(f"Error preparing {fig_key} data (lang={lang}): {e}", exc_info=True); return ChartData(metadata=metadata, data={'labels': [], 'values': []})
+        except Exception as e:
+            logger.error(f"Error preparing {fig_key} data (lang={lang}): {e}", exc_info=True)
+            return ChartData(metadata=metadata, data={'labels': [], 'values': []}) # Return metadata
 
     def _prepare_fig3_data(self, product_flow: Optional[pd.DataFrame], lang: str) -> Optional[ChartData]:
         fig_key = 'fig3'
         if not MODELS_IMPORTED: logger.error(f"{fig_key} (lang={lang}): Pydantic models not imported."); return None
-        series_info = [{'internal_name': 'sales_amount', 'title_key': 'revenue', 'color': 'rgb(26, 118, 255)'},{'internal_name': 'COGS', 'title_key': 'cogs', 'color': 'rgb(255, 127, 14)'},{'internal_name': 'Margin', 'title_key': 'margin', 'color': 'rgb(44, 160, 44)'}]
-        metadata = self._get_chart_metadata(fig_key, lang, ChartType.BAR, x_name='name', y_name='value', series_info=series_info)
-        if product_flow is None or product_flow.empty: return ChartData(metadata=metadata, data=[])
+
+        series_info = [
+            {'internal_name': 'sales_amount', 'title_key': 'revenue', 'color': 'rgb(26, 118, 255)'},
+            {'internal_name': 'COGS', 'title_key': 'cogs', 'color': 'rgb(255, 127, 14)'},
+            {'internal_name': 'Margin', 'title_key': 'margin', 'color': 'rgb(44, 160, 44)'}
+        ]
+        metadata = self._get_chart_metadata(fig_key, lang, ChartType.BAR,
+                                            x_name='name', x_type_key='category',
+                                            y_name='value', y_type_key='number',
+                                            series_info=series_info)
+
+        if product_flow is None or product_flow.empty:
+            logger.warning(f"{fig_key} (lang={lang}): Product flow data missing.");
+            return ChartData(metadata=metadata, data=[])
+
         try:
-            pf = product_flow; required_cols = ['name', 'sales_amount', 'sales_quantity', 'buyPrice']; profit_col_available = 'net_profit' in pf.columns
+            pf = product_flow
+            required_cols = ['name', 'sales_amount', 'sales_quantity', 'buyPrice']
+            profit_col_available = 'net_profit' in pf.columns
             if profit_col_available: required_cols.append('net_profit')
-            if not all(c in pf.columns for c in required_cols): logger.error(f"{fig_key}: Missing required columns."); return ChartData(metadata=metadata, data=[])
+
+            if not all(c in pf.columns for c in required_cols):
+                 logger.error(f"{fig_key}: Missing one or more required columns: {required_cols}")
+                 return ChartData(metadata=metadata, data=[])
+
             top20 = pf.nlargest(20, 'sales_amount').copy()
-            if top20.empty: return ChartData(metadata=metadata, data=[])
-            top20['COGS'] = top20['sales_quantity'] * top20['buyPrice']; top20['Margin'] = top20['sales_amount'] - top20['COGS']
-            x_axis_title = metadata.x_axis.title; series_rev_name = get_translation(lang, 'fig3.series.revenue', 'Revenue'); series_cogs_name = get_translation(lang, 'fig3.series.cogs', 'COGS'); series_margin_name = get_translation(lang, 'fig3.series.margin', 'Margin')
-            data_df = top20[['name', 'sales_amount', 'COGS', 'Margin']].rename(columns={'name': x_axis_title, 'sales_amount': series_rev_name, 'COGS': series_cogs_name, 'Margin': series_margin_name})
-            data_list = data_df.to_dict(orient='records'); data_list = [{k: (None if pd.isna(v) else v) for k, v in row.items()} for row in data_list]
+            if top20.empty:
+                 logger.info(f"{fig_key}: No data after selecting top 20 by sales amount.")
+                 return ChartData(metadata=metadata, data=[])
+
+            top20['COGS'] = top20['sales_quantity'] * top20['buyPrice']
+            top20['Margin'] = top20['sales_amount'] - top20['COGS']
+
+            x_axis_title = metadata.x_axis.title
+            series_rev_name = next((s.name for s in metadata.series if s.name == get_translation(lang, 'fig3.series.revenue', 'Revenue')), 'Revenue')
+            series_cogs_name = next((s.name for s in metadata.series if s.name == get_translation(lang, 'fig3.series.cogs', 'COGS')), 'COGS')
+            series_margin_name = next((s.name for s in metadata.series if s.name == get_translation(lang, 'fig3.series.margin', 'Margin')), 'Margin')
+
+
+            data_df = top20[['name', 'sales_amount', 'COGS', 'Margin']].rename(columns={
+                'name': x_axis_title, 'sales_amount': series_rev_name,
+                'COGS': series_cogs_name, 'Margin': series_margin_name
+            })
+            data_list = data_df.to_dict(orient='records')
+            data_list = [{k: (None if pd.isna(v) else v) for k, v in row.items()} for row in data_list]
+
             return ChartData(metadata=metadata, data=data_list)
-        except Exception as e: logger.error(f"Error preparing {fig_key} data (lang={lang}): {e}", exc_info=True); return ChartData(metadata=metadata, data=[])
+        except Exception as e:
+            logger.error(f"Error preparing {fig_key} data (lang={lang}): {e}", exc_info=True)
+            return ChartData(metadata=metadata, data=[])
 
     def _prepare_fig5_data(self, product_flow: Optional[pd.DataFrame], lang: str) -> Optional[ChartData]:
         fig_key = 'fig5'
         if not MODELS_IMPORTED: logger.error(f"{fig_key} (lang={lang}): Pydantic models not imported."); return None
-        series_info = [{'internal_name': 'current_stock', 'title_key': 'stock', 'color': 'rgb(55, 83, 109)'},{'internal_name': 'sales_quantity', 'title_key': 'sales', 'color': 'rgb(26, 118, 255)'}]
-        metadata = self._get_chart_metadata(fig_key, lang, ChartType.BAR, x_name='efficiency', y_name='value', series_info=series_info)
-        if product_flow is None or product_flow.empty: return ChartData(metadata=metadata, data=[])
+
+        series_info = [
+            {'internal_name': 'current_stock', 'title_key': 'stock', 'color': 'rgb(55, 83, 109)'},
+            {'internal_name': 'sales_quantity', 'title_key': 'sales', 'color': 'rgb(26, 118, 255)'}
+        ]
+        metadata = self._get_chart_metadata(fig_key, lang, ChartType.BAR,
+                                            x_name='efficiency', x_type_key='category',
+                                            y_name='value', y_type_key='number',
+                                            series_info=series_info)
+
+        if product_flow is None or product_flow.empty:
+            logger.warning(f"{fig_key} (lang={lang}): Product flow data missing.");
+            return ChartData(metadata=metadata, data=[])
+
         try:
             pf = product_flow;
-            if not all(c in pf.columns for c in ['efficiency', 'current_stock', 'sales_quantity']): logger.error(f"{fig_key}: Missing required columns."); return ChartData(metadata=metadata, data=[])
-            valid_cats_internal = config.analysis_params['efficiency_labels']; eff_group = pf[pf['efficiency'].isin(valid_cats_internal)].groupby('efficiency', observed=False)[['current_stock', 'sales_quantity']].sum().reset_index()
-            if eff_group.empty: return ChartData(metadata=metadata, data=[])
-            x_axis_title_display = metadata.x_axis.title; eff_group[x_axis_title_display] = eff_group['efficiency'].apply(lambda x: get_translation(lang, f'efficiency_labels.{x}', str(x)))
-            stock_series_name = get_translation(lang, 'fig5.series.stock', 'Total Stock'); sales_series_name = get_translation(lang, 'fig5.series.sales', 'Total Sales')
-            data_df = eff_group.rename(columns={'current_stock': stock_series_name, 'sales_quantity': sales_series_name})
+            if not all(c in pf.columns for c in ['efficiency', 'current_stock', 'sales_quantity']):
+                 logger.error(f"{fig_key}: Missing required columns ['efficiency', 'current_stock', 'sales_quantity']")
+                 return ChartData(metadata=metadata, data=[])
+
+            valid_cats_internal = config.analysis_params['efficiency_labels'];
+            eff_group = pf[pf['efficiency'].isin(valid_cats_internal)].groupby('efficiency', observed=False)[['current_stock', 'sales_quantity']].sum().reset_index()
+
+            if eff_group.empty:
+                logger.info(f"{fig_key} (lang={lang}): No aggregated efficiency data to display.")
+                return ChartData(metadata=metadata, data=[])
+
+            x_axis_title_display = metadata.x_axis.title # Get translated axis title
+            eff_group[x_axis_title_display] = eff_group['efficiency'].apply(lambda x: get_translation(lang, f'efficiency_labels.{x}', x))
+
+            stock_series_name = next((s.name for s in metadata.series if s.name == get_translation(lang, 'fig5.series.stock', 'Stock')), 'Total Stock')
+            sales_series_name = next((s.name for s in metadata.series if s.name == get_translation(lang, 'fig5.series.sales', 'Sales')), 'Total Sales')
+
+            data_df = eff_group.rename(
+                columns={'current_stock': stock_series_name, 'sales_quantity': sales_series_name}
+            )
             data = data_df[[x_axis_title_display, stock_series_name, sales_series_name]].to_dict(orient='records')
             data = [{k: (None if pd.isna(v) else v) for k, v in row.items()} for row in data];
-            return ChartData(metadata=metadata, data=data)
-        except Exception as e: logger.error(f"Error preparing {fig_key} data (lang={lang}): {e}", exc_info=True); return ChartData(metadata=metadata, data=[])
 
-    # --- START: Corrected _prepare_fig6_data (Original Logic + Category Addition) ---
+            return ChartData(metadata=metadata, data=data)
+        except Exception as e:
+            logger.error(f"Error preparing {fig_key} data (lang={lang}): {e}", exc_info=True)
+            return ChartData(metadata=metadata, data=[])
+
     def _prepare_fig6_data(self, pareto_data: Optional[pd.DataFrame], lang: str) -> Optional[ChartData]:
         fig_key = 'fig6'
         logger.info(f"[{fig_key}] Lang '{lang}': Preparing figure (Original Logic + Category)...")
+
         if not MODELS_IMPORTED: logger.error(f"[{fig_key}] Pydantic models not imported."); return None
-        series_info_structure = [{'internal_name': 'sales_quantity', 'title_key': 'sales', 'color': 'cornflowerblue', 'type': ChartType.BAR}, {'internal_name': 'cumulative_percentage', 'title_key': 'cumulative', 'color': 'red', 'type': ChartType.LINE}]
-        metadata = self._get_chart_metadata(fig_key, lang, ChartType.COMBO, x_name='name', y_name='sales_quantity', series_info=series_info_structure)
+
+        series_info_structure = [
+            {'internal_name': 'sales_quantity', 'title_key': 'sales', 'color': 'cornflowerblue', 'type': ChartType.BAR},
+            {'internal_name': 'cumulative_percentage', 'title_key': 'cumulative', 'color': 'red', 'type': ChartType.LINE}
+        ]
+        metadata = self._get_chart_metadata(
+            fig_key, lang, ChartType.COMBO,
+            x_name='name', x_type_key='category',
+            y_name='sales_quantity', y_type_key='number',
+            series_info=series_info_structure
+        )
         y2_title = get_translation(lang, f'{fig_key}.y2_axis.title', 'Cumulative %')
-        if pareto_data is None or pareto_data.empty: logger.warning(f"[{fig_key}] Input 'pareto_data' is missing or empty."); return ChartData(metadata=metadata, data=[])
-        required_cols = ['name', 'sales_quantity', 'cumulative_percentage'];
-        if not all(c in pareto_data.columns for c in required_cols): logger.error(f"[{fig_key}] Input 'pareto_data' missing required columns: {[c for c in required_cols if c not in pareto_data.columns]}"); return ChartData(metadata=metadata, data=[])
+
+        if pareto_data is None or pareto_data.empty:
+            logger.warning(f"[{fig_key}] Input 'pareto_data' is missing or empty.")
+            return ChartData(metadata=metadata, data=[])
+
+        logger.debug(f"[{fig_key}] Received 'pareto_data' shape: {pareto_data.shape}. Columns: {pareto_data.columns.tolist()}")
+        required_cols = ['name', 'sales_quantity', 'cumulative_percentage']
+        if not all(c in pareto_data.columns for c in required_cols):
+            missing_cols_list = [c for c in required_cols if c not in pareto_data.columns]
+            logger.error(f"[{fig_key}] Input 'pareto_data' missing required columns: {missing_cols_list}")
+            return ChartData(metadata=metadata, data=[])
+
         try:
-            pareto = pareto_data.copy(); x_axis_title_display = metadata.x_axis.title; sales_series_name = next((s.name for s in metadata.series if s.type == ChartType.BAR), 'Sales Quantity'); cum_series_name = next((s.name for s in metadata.series if s.type == ChartType.LINE), 'Cumulative %')
-            data_df = pareto.rename(columns={'name': x_axis_title_display, 'sales_quantity': sales_series_name, 'cumulative_percentage': cum_series_name})
-            data_df_final = data_df[[x_axis_title_display, sales_series_name, cum_series_name]].copy(); data_df_final['original_cumulative'] = pareto['cumulative_percentage'].copy()
-            bins = list(np.arange(0, 80.1, 10));
-            if not bins or bins[-1] < 80: bins.append(80.1); bins = sorted(list(set(bins))); labels = [f"{int(bins[i])}-{int(bins[i+1])}%" for i in range(len(bins)-1)] if len(bins) >= 2 else []; cat_key_json = "percentage_category"
+            pareto = pareto_data.copy()
+            x_axis_title_display = metadata.x_axis.title
+            sales_series_name = next((s.name for s in metadata.series if s.type == ChartType.BAR), 'Sales Quantity')
+            cum_series_name = next((s.name for s in metadata.series if s.type == ChartType.LINE), 'Cumulative %')
+
+            data_df = pareto.rename(columns={
+                'name': x_axis_title_display,
+                'sales_quantity': sales_series_name,
+                'cumulative_percentage': cum_series_name
+            })
+
+            data_df_final = data_df[[x_axis_title_display, sales_series_name, cum_series_name]].copy()
+            data_df_final['original_cumulative'] = pareto['cumulative_percentage'].copy()
+
+            bins = list(np.arange(0, 80.1, 10))
+            if not bins or bins[-1] < 80: bins.append(80.1)
+            bins = sorted(list(set(bins)))
+            labels = [f"{int(bins[i])}-{int(bins[i+1])}%" for i in range(len(bins)-1)] if len(bins) >= 2 else []
+            cat_key_json = "percentage_category"
+
             if labels:
                  data_df_final['original_cumulative'] = pd.to_numeric(data_df_final['original_cumulative'], errors='coerce')
-                 data_df_final[cat_key_json] = pd.cut(data_df_final['original_cumulative'], bins=bins, labels=labels, right=True, include_lowest=True)
-                 data_df_final[cat_key_json] = data_df_final[cat_key_json].cat.add_categories('Other').fillna('Other').astype(str)
-            else: data_df_final[cat_key_json] = 'Other'
-            data_list = data_df_final.drop(columns=['original_cumulative']).to_dict(orient='records'); cleaned_data = []
+                 data_df_final[cat_key_json] = pd.cut(data_df_final['original_cumulative'],
+                                                     bins=bins,
+                                                     labels=labels,
+                                                     right=True,
+                                                     include_lowest=True)
+                 data_df_final[cat_key_json] = data_df_final[cat_key_json].cat.add_categories('Other').fillna('Other')
+                 data_df_final[cat_key_json] = data_df_final[cat_key_json].astype(str)
+                 logger.debug(f"[{fig_key}] Categories calculated using bins: {bins}")
+            else:
+                 data_df_final[cat_key_json] = 'Other'
+                 logger.warning(f"[{fig_key}] No labels created for percentage categories.")
+
+            logger.debug(f"[{fig_key}] Columns before final dict conversion: {data_df_final.columns.tolist()}")
+            data_list = data_df_final.drop(columns=['original_cumulative']).to_dict(orient='records')
+
+            cleaned_data = []
             for row in data_list:
-                cleaned_row = {};
+                cleaned_row = {}
                 for k, v in row.items():
-                    if pd.isna(v): cleaned_row[k] = None
-                    elif k == cum_series_name: try: cleaned_row[k] = round(float(v), 2) except (ValueError, TypeError): cleaned_row[k] = str(v)
+                    if pd.isna(v):
+                        cleaned_row[k] = None
+                    elif k == cum_series_name:
+                        try: cleaned_row[k] = round(float(v), 2)
+                        except (ValueError, TypeError): cleaned_row[k] = str(v)
                     elif isinstance(v, (int, float, np.number)): cleaned_row[k] = float(v)
                     else: cleaned_row[k] = str(v)
                 cleaned_data.append(cleaned_row)
+
             logger.info(f"[{fig_key}] Prepared data with categories. Output length: {len(cleaned_data)}")
-            if not cleaned_data and len(pareto_data) > 0: logger.error(f"[{fig_key}] Data list became empty!"); return ChartData(metadata=metadata, data=[])
+
+            if not cleaned_data and len(pareto_data) > 0:
+                 logger.error(f"[{fig_key}] Data list became empty unexpectedly after processing {len(pareto_data)} initial rows!")
+                 return ChartData(metadata=metadata, data=[])
+
             return ChartData(metadata=metadata, data=cleaned_data)
-        except Exception as e: logger.error(f"[{fig_key}] Error preparing data (lang={lang}): {e}", exc_info=True); return ChartData(metadata=metadata, data=[])
-    # --- END: Corrected _prepare_fig6_data ---
+
+        except Exception as e:
+            logger.error(f"[{fig_key}] Error preparing data (lang={lang}): {e}", exc_info=True)
+            return ChartData(metadata=metadata, data=[])
 
     def _prepare_fig7_data(self, product_flow: Optional[pd.DataFrame], lang: str) -> Optional[ChartData]:
         fig_key = 'fig7'
         if not MODELS_IMPORTED: logger.error(f"{fig_key} (lang={lang}): Pydantic models not imported."); return None
+
         series_info = [{'internal_name': 'product', 'title_key': 'products', 'color': 'blue'}]
-        metadata = self._get_chart_metadata(fig_key, lang, ChartType.SCATTER, x_name='salePrice', y_name='sales_quantity', series_info=series_info)
-        if product_flow is None or product_flow.empty: return ChartData(metadata=metadata, data=[])
+        metadata = self._get_chart_metadata(fig_key, lang, ChartType.SCATTER,
+                                            x_name='salePrice', x_type_key='number',
+                                            y_name='sales_quantity', y_type_key='number',
+                                            series_info=series_info)
+
+        if product_flow is None or product_flow.empty:
+            logger.warning(f"{fig_key}: Product flow data missing.");
+            return ChartData(metadata=metadata, data=[])
+
         try:
-            pf = product_flow; required_cols = ['salePrice', 'sales_quantity', 'name']
-            if not all(c in pf.columns for c in required_cols): logger.error(f"{fig_key}: Missing required columns."); return ChartData(metadata=metadata, data=[])
+            pf = product_flow
+            required_cols = ['salePrice', 'sales_quantity', 'name']
+            if not all(c in pf.columns for c in required_cols):
+                 logger.error(f"{fig_key}: Missing required columns: {required_cols}")
+                 return ChartData(metadata=metadata, data=[])
+
             scatter_data = pf[(pf['salePrice'] > 0) & (pf['sales_quantity'] > 0)].copy()
-            if scatter_data.empty: return ChartData(metadata=metadata, data=[])
-            x_axis_title_display = metadata.x_axis.title; y_axis_title_display = metadata.y_axis.title; tooltip_name_key = get_translation(lang, 'common.product_name', 'Product Name')
-            data_df = scatter_data[['name', 'salePrice', 'sales_quantity']].rename(columns={'name': tooltip_name_key, 'salePrice': x_axis_title_display, 'sales_quantity': y_axis_title_display})
+            if scatter_data.empty:
+                 logger.info(f"{fig_key}: No data points with positive price and quantity.")
+                 return ChartData(metadata=metadata, data=[])
+
+            x_axis_title_display = metadata.x_axis.title
+            y_axis_title_display = metadata.y_axis.title
+            tooltip_name_key = get_translation(lang, 'common.product_name', 'Product Name')
+
+            data_df = scatter_data[['name', 'salePrice', 'sales_quantity']].rename(columns={
+                'name': tooltip_name_key, 'salePrice': x_axis_title_display, 'sales_quantity': y_axis_title_display
+            })
             data = data_df[[tooltip_name_key, x_axis_title_display, y_axis_title_display]].to_dict(orient='records')
             data = [{k: (None if pd.isna(v) else v) for k, v in row.items()} for row in data]
+
             return ChartData(metadata=metadata, data=data)
-        except Exception as e: logger.error(f"Error preparing {fig_key} data (lang={lang}): {e}", exc_info=True); return ChartData(metadata=metadata, data=[])
+        except Exception as e:
+            logger.error(f"Error preparing {fig_key} data (lang={lang}): {e}", exc_info=True)
+            return ChartData(metadata=metadata, data=[])
 
     def _prepare_fig10_data(self, stagnant_products: Optional[pd.DataFrame], lang: str) -> Optional[ChartData]:
         fig_key = 'fig10'
         if not MODELS_IMPORTED: logger.error(f"{fig_key} (lang={lang}): Pydantic models not imported."); return None
+
         series_info = [{'internal_name': 'stagnancy', 'title_key': 'category'}]
-        metadata = self._get_chart_metadata(fig_key, lang, ChartType.BAR, x_name='name', y_name='days_since_last_sale', series_info=series_info)
-        if stagnant_products is None or stagnant_products.empty: return ChartData(metadata=metadata, data=[])
+        metadata = self._get_chart_metadata(fig_key, lang, ChartType.BAR,
+                                            x_name='name', x_type_key='category',
+                                            y_name='days_since_last_sale', y_type_key='number',
+                                            series_info=series_info)
+
+        if stagnant_products is None or stagnant_products.empty:
+            logger.info(f"{fig_key}: Stagnant products data missing or empty.");
+            return ChartData(metadata=metadata, data=[])
+
         try:
             required_cols = ['name', 'days_since_last_sale', 'days_category']
-            if not all(col in stagnant_products.columns for col in required_cols): logger.error(f"{fig_key}: Stagnant products data missing required columns."); return ChartData(metadata=metadata, data=[])
-            stagnant_sorted = stagnant_products.sort_values('days_since_last_sale', ascending=False)
-            x_axis_title_display = metadata.x_axis.title; y_axis_title_display = metadata.y_axis.title; rename_map = {'name': x_axis_title_display, 'days_since_last_sale': y_axis_title_display}; cols_to_select = ['name', 'days_since_last_sale']
-            category_data_key = get_translation(lang, f'{fig_key}.data_keys.category', 'Stagnancy Period'); stagnant_sorted[category_data_key] = stagnant_sorted['days_category'].apply(lambda x: get_translation(lang, f'stagnant_labels.{x}', str(x))); cols_to_select.append(category_data_key); rename_map['days_category'] = category_data_key
-            optional_cols_map = {'last_sale_date_str': get_translation(lang, 'common.last_sale_date', 'Last Sale'), 'current_stock': get_translation(lang, 'common.current_stock', 'Stock'), 'product_id': get_translation(lang, 'common.product_id', 'ID')}
-            for internal, translated in optional_cols_map.items():
-                if internal in stagnant_sorted.columns: rename_map[internal] = translated; cols_to_select.append(internal)
-            cols_to_select = [col for col in cols_to_select if col in stagnant_sorted.columns]
-            data_df = stagnant_sorted[cols_to_select].rename(columns=rename_map)
-            data = data_df.to_dict(orient='records'); data = [{k: (None if pd.isna(v) else v) for k, v in row.items()} for row in data];
-            return ChartData(metadata=metadata, data=data)
-        except Exception as e: logger.error(f"Error preparing {fig_key} data (lang={lang}): {e}", exc_info=True); return ChartData(metadata=metadata, data=[])
+            if not all(col in stagnant_products.columns for col in required_cols):
+                 logger.error(f"{fig_key}: Stagnant products data missing required columns: {required_cols}")
+                 return ChartData(metadata=metadata, data=[])
 
+            stagnant_sorted = stagnant_products.sort_values('days_since_last_sale', ascending=False)
+
+            x_axis_title_display = metadata.x_axis.title
+            y_axis_title_display = metadata.y_axis.title
+
+            rename_map = {'name': x_axis_title_display, 'days_since_last_sale': y_axis_title_display}
+            cols_to_select = ['name', 'days_since_last_sale']
+
+            category_data_key = get_translation(lang, f'{fig_key}.data_keys.category', 'Stagnancy Period')
+            stagnant_sorted[category_data_key] = stagnant_sorted['days_category'].apply(lambda x: get_translation(lang, f'stagnant_labels.{x}', str(x)))
+            cols_to_select.append(category_data_key)
+            rename_map['days_category'] = category_data_key
+
+            optional_cols_map = {
+                'last_sale_date_str': get_translation(lang, 'common.last_sale_date', 'Last Sale'),
+                'current_stock': get_translation(lang, 'common.current_stock', 'Stock'),
+                'product_id': get_translation(lang, 'common.product_id', 'ID')
+            }
+            for internal, translated in optional_cols_map.items():
+                if internal in stagnant_sorted.columns:
+                    rename_map[internal] = translated
+                    cols_to_select.append(internal)
+
+            cols_to_select = [col for col in cols_to_select if col in stagnant_sorted.columns]
+
+            data_df = stagnant_sorted[cols_to_select].rename(columns=rename_map)
+
+            data = data_df.to_dict(orient='records');
+            data = [{k: (None if pd.isna(v) else v) for k, v in row.items()} for row in data];
+            return ChartData(metadata=metadata, data=data)
+        except Exception as e:
+            logger.error(f"Error preparing {fig_key} data (lang={lang}): {e}", exc_info=True)
+            return ChartData(metadata=metadata, data=[])
+
+    # --- MODIFICATION START for fig11 (Daily) ---
     def _prepare_fig11_data(self, daily_forecast: Optional[pd.DataFrame], lang: str) -> Optional[ChartData]:
         fig_key = 'fig11'
         if not MODELS_IMPORTED: logger.error(f"{fig_key} (lang={lang}): Pydantic models not imported."); return None
-        series_info = [{'internal_name': 'actual', 'title_key': 'actual', 'color': 'blue'},{'internal_name': 'forecast', 'title_key': 'forecast', 'color': 'red'},{'internal_name': 'ci', 'title_key': 'ci', 'color': 'rgba(255, 0, 0, 0.15)'}]
-        metadata = self._get_chart_metadata(fig_key, lang, ChartType.LINE, x_name=DATE_COLUMN_OUTPUT, y_name='value', series_info=series_info)
-        combined_data = []; actual_df = pd.DataFrame()
+
+        series_info = [
+             {'internal_name': 'actual', 'title_key': 'actual', 'color': 'blue'},
+             {'internal_name': 'forecast', 'title_key': 'forecast', 'color': 'red'},
+             {'internal_name': 'ci', 'title_key': 'ci', 'color': 'rgba(255, 0, 0, 0.15)'}
+         ]
+        metadata = self._get_chart_metadata(fig_key, lang, ChartType.LINE,
+                                             x_name=FORECAST_DATE_COL, x_type_key='date',
+                                             y_name='value', y_type_key='number',
+                                             series_info=series_info)
+        combined_data = []
         try:
             sid = self.processed_data.get('sale_invoices_details')
-            si = self.processed_data.get('sale_invoices')
-            if sid is not None and not sid.empty and si is not None and not si.empty and 'created_at_dt' in si.columns:
+            actual_df_filled = pd.DataFrame() # Initialize empty DataFrame for actual data
+
+            if sid is not None and not sid.empty:
                 sid_total_col = config.required_columns['sale_invoices_details'][4]
                 if 'created_at_per_day' in sid.columns and sid_total_col in sid.columns:
-                    logger.debug(f"[{fig_key}] Aggregating actual daily sales...")
-                    daily_actual_aggregated = sid.groupby('created_at_per_day')[sid_total_col].sum().reset_index()
-                    if not daily_actual_aggregated.empty:
-                        min_date = si['created_at_dt'].min().normalize(); max_date = si['created_at_dt'].max().normalize()
-                        logger.debug(f"[{fig_key}] Full date range for actuals: {min_date.date()} to {max_date.date()}")
-                        all_days_idx = pd.date_range(start=min_date, end=max_date, freq='D')
-                        full_range_df = pd.DataFrame(index=all_days_idx)
-                        daily_actual_aggregated['created_at_per_day'] = pd.to_datetime(daily_actual_aggregated['created_at_per_day'])
-                        daily_actual_aggregated = daily_actual_aggregated.set_index('created_at_per_day')
-                        actual_df_complete = full_range_df.merge(daily_actual_aggregated, left_index=True, right_index=True, how='left')
-                        actual_df_complete.rename(columns={sid_total_col: 'value'}, inplace=True)
-                        actual_df_complete['value'] = actual_df_complete['value'].fillna(0) # Fill missing days with 0
-                        actual_df_complete = actual_df_complete.reset_index().rename(columns={'index': DATE_COLUMN_OUTPUT})
-                        actual_df_complete[DATE_COLUMN_OUTPUT] = pd.to_datetime(actual_df_complete[DATE_COLUMN_OUTPUT]).dt.strftime('%Y-%m-%d')
-                        logger.info(f"[{fig_key}] Actual daily sales data prepared with {len(actual_df_complete)} days (including zeros).")
-                        actual_df = actual_df_complete[[DATE_COLUMN_OUTPUT, 'value']].copy()
-                        actual_df['type'] = 'actual'; actual_df['lower_ci'] = None; actual_df['upper_ci'] = None;
-                        actual_df['value'] = actual_df['value'].astype(float)
-                        combined_data.extend(actual_df.to_dict(orient='records'))
-                    else: logger.warning(f"[{fig_key}] No actual daily sales data after aggregation.")
-                else: logger.warning(f"[{fig_key}] Missing required columns for aggregation ('created_at_per_day' or '{sid_total_col}').")
-            else: logger.warning(f"[{fig_key}] Processed SID or SI data is missing or empty. Cannot calculate actual daily sales.")
+                    logger.info(f"[{fig_key}] Aggregating actual daily sales...")
+                    # Aggregate sales per day where sales exist
+                    daily_actual_all = sid.groupby('created_at_per_day')[sid_total_col].sum().reset_index()
 
+                    if not daily_actual_all.empty:
+                        # Convert date column to datetime objects for range calculation
+                        daily_actual_all['date'] = pd.to_datetime(daily_actual_all['created_at_per_day'])
+                        daily_actual_all.rename(columns={sid_total_col: 'value'}, inplace=True)
+
+                        # Determine the full date range of actual sales
+                        min_date = daily_actual_all['date'].min()
+                        max_date = daily_actual_all['date'].max()
+                        logger.info(f"[{fig_key}] Actual data range: {min_date.date()} to {max_date.date()}")
+
+                        # Create a complete daily index for the actual period
+                        all_days_index = pd.date_range(start=min_date, end=max_date, freq='D')
+                        all_days_df = pd.DataFrame(all_days_index, columns=['date'])
+                        logger.info(f"[{fig_key}] Created full date range with {len(all_days_df)} days.")
+
+                        # Merge actual sales with the full date range, filling missing days with 0
+                        actual_df_filled = pd.merge(all_days_df, daily_actual_all[['date', 'value']], on='date', how='left')
+                        actual_df_filled['value'] = actual_df_filled['value'].fillna(0)
+                        logger.info(f"[{fig_key}] Merged actual data with full range. Filled {actual_df_filled['value'].isna().sum()} NaNs with 0 (should be 0).")
+
+                        # Prepare the final structure for actual data
+                        actual_df_filled[FORECAST_DATE_COL] = actual_df_filled['date'].dt.strftime('%Y-%m-%d') # Use the unified output date column name
+                        actual_df_filled['type'] = 'actual'
+                        actual_df_filled['lower_ci'] = None
+                        actual_df_filled['upper_ci'] = None
+                        actual_df_filled['value'] = actual_df_filled['value'].astype(float)
+
+                        # Add the zero-filled actual data to the combined list
+                        combined_data.extend(actual_df_filled[[FORECAST_DATE_COL, 'value', 'type', 'lower_ci', 'upper_ci']].to_dict(orient='records'))
+                        logger.info(f"[{fig_key}] Added {len(actual_df_filled)} actual data points (including zeros) to combined list.")
+                    else:
+                        logger.warning(f"[{fig_key}] Aggregated daily actual sales resulted in an empty DataFrame.")
+                else:
+                    logger.warning(f"[{fig_key}] Missing required columns ('created_at_per_day' or '{sid_total_col}') in sale_invoices_details for actual data.")
+            else:
+                logger.warning(f"[{fig_key}] Sale invoice details data is missing or empty. Cannot process actual daily sales.")
+
+            # --- Process Forecast Data (Remains the same) ---
             if daily_forecast is not None and not daily_forecast.empty:
-                required = [DATE_COLUMN_OUTPUT, 'forecast', 'lower_ci', 'upper_ci']
+                required = [FORECAST_DATE_COL, 'forecast', 'lower_ci', 'upper_ci'] # Use unified date col name
                 if all(col in daily_forecast.columns for col in required):
                     fc_df = daily_forecast[required].copy()
-                    if not pd.api.types.is_string_dtype(fc_df[DATE_COLUMN_OUTPUT]): fc_df[DATE_COLUMN_OUTPUT] = pd.to_datetime(fc_df[DATE_COLUMN_OUTPUT]).dt.strftime('%Y-%m-%d')
+                    # Ensure forecast date is string YYYY-MM-DD
+                    if not pd.api.types.is_string_dtype(fc_df[FORECAST_DATE_COL]):
+                         logger.warning(f"[{fig_key}] Forecast date column '{FORECAST_DATE_COL}' is not string. Converting.")
+                         fc_df[FORECAST_DATE_COL] = pd.to_datetime(fc_df[FORECAST_DATE_COL]).dt.strftime('%Y-%m-%d')
+
                     fc_df.rename(columns={'forecast': 'value'}, inplace=True); fc_df['type'] = 'forecast'
                     for col in ['value', 'lower_ci', 'upper_ci']: fc_df[col] = pd.to_numeric(fc_df[col], errors='coerce').fillna(0).astype(float).round(2)
                     combined_data.extend(fc_df.to_dict(orient='records'))
-                    logger.info(f"[{fig_key}] Added {len(fc_df)} forecast points.")
-                else: logger.warning(f"{fig_key}: Daily forecast DataFrame missing required columns.")
-            else: logger.info(f"[{fig_key}] No forecast data available.")
+                    logger.info(f"[{fig_key}] Added {len(fc_df)} forecast data points to combined list.")
+                else: logger.warning(f"{fig_key}: Daily forecast DataFrame missing required columns: {required}")
+            else:
+                logger.info(f"[{fig_key}] No daily forecast data provided or it's empty.")
 
-            if not combined_data: logger.warning(f"{fig_key} (lang={lang}): No actual or forecast data available."); return ChartData(metadata=metadata, data=[])
-            combined_data = sorted(combined_data, key=lambda x: x.get(DATE_COLUMN_OUTPUT, ''))
+            # --- Final Combination and Sorting ---
+            if not combined_data:
+                logger.warning(f"{fig_key} (lang={lang}): No actual or forecast data available after processing.");
+                return ChartData(metadata=metadata, data=[])
+
+            # Sort by the date string ('YYYY-MM-DD')
+            combined_data = sorted(combined_data, key=lambda x: x.get(FORECAST_DATE_COL, ''))
             cleaned_combined_data = [{k: (None if pd.isna(v) else v) for k, v in row.items()} for row in combined_data]
-            return ChartData(metadata=metadata, data=cleaned_combined_data)
-        except Exception as e: logger.error(f"Error preparing {fig_key} data (lang={lang}): {e}", exc_info=True); return ChartData(metadata=metadata, data=[])
 
+            logger.info(f"[{fig_key}] Prepared final data with {len(cleaned_combined_data)} points (actuals zero-filled).")
+            return ChartData(metadata=metadata, data=cleaned_combined_data)
+
+        except Exception as e:
+            logger.error(f"Error preparing {fig_key} data (lang={lang}): {e}", exc_info=True)
+            return ChartData(metadata=metadata, data=[])
+    # --- MODIFICATION END for fig11 ---
+
+    # --- MODIFICATION START for fig12 (Monthly) ---
     def _prepare_fig12_data(self, monthly_avg_ts: Optional[pd.Series], monthly_forecast: Optional[pd.DataFrame], lang: str) -> Optional[ChartData]:
         fig_key = 'fig12'
         if not MODELS_IMPORTED: logger.error(f"{fig_key} (lang={lang}): Pydantic models not imported."); return None
-        series_info = [{'internal_name': 'actual', 'title_key': 'actual', 'color': 'royalblue'},{'internal_name': 'forecast', 'title_key': 'forecast', 'color': 'firebrick'},{'internal_name': 'ci', 'title_key': 'ci', 'color': 'rgba(255, 100, 100, 0.15)'}]
-        metadata = self._get_chart_metadata(fig_key, lang, ChartType.LINE, x_name=DATE_COLUMN_OUTPUT, y_name='value', series_info=series_info)
-        combined_data = []; actual_df = pd.DataFrame()
-        try:
-            if monthly_avg_ts is not None and not monthly_avg_ts.empty:
-                logger.debug(f"[{fig_key}] Preparing complete actual monthly average data...")
-                if not isinstance(monthly_avg_ts.index, pd.DatetimeIndex): monthly_avg_ts.index = pd.to_datetime(monthly_avg_ts.index)
-                monthly_avg_ts = monthly_avg_ts.asfreq('MS') # Ensure MS frequency
-                min_date = monthly_avg_ts.index.min(); max_date = monthly_avg_ts.index.max()
-                if pd.isna(min_date) or pd.isna(max_date):
-                    logger.warning(f"[{fig_key}] Could not determine date range for monthly data."); complete_ts = pd.Series(dtype='float64')
-                else:
-                    all_months_idx = pd.date_range(start=min_date, end=max_date, freq='MS')
-                    complete_ts = monthly_avg_ts.reindex(all_months_idx).fillna(0) # Fill NaNs with 0
-                logger.info(f"[{fig_key}] Actual monthly data prepared with {len(complete_ts)} months (including zeros).")
-                if not complete_ts.empty:
-                    actual_df = complete_ts.reset_index().rename(columns={'index': 'sort_date', complete_ts.name or 0: 'value'})
-                    actual_df['type'] = 'actual'; actual_df['lower_ci'] = None; actual_df['upper_ci'] = None
-                    actual_df['value'] = actual_df['value'].astype(float)
-                    actual_df[DATE_COLUMN_OUTPUT] = actual_df['sort_date'].dt.strftime('%Y-%m')
-                    combined_data.extend(actual_df[[DATE_COLUMN_OUTPUT, 'value', 'type', 'lower_ci', 'upper_ci']].to_dict(orient='records'))
-            else: logger.warning(f"[{fig_key}] monthly_avg_invoice_ts is missing or empty.")
 
+        series_info = [
+             {'internal_name': 'actual', 'title_key': 'actual', 'color': 'royalblue'},
+             {'internal_name': 'forecast', 'title_key': 'forecast', 'color': 'firebrick'},
+             {'internal_name': 'ci', 'title_key': 'ci', 'color': 'rgba(255, 100, 100, 0.15)'}
+         ]
+        metadata = self._get_chart_metadata(fig_key, lang, ChartType.LINE,
+                                             x_name=FORECAST_DATE_COL, x_type_key='category', # Use unified date col name, type category for YYYY-MM
+                                             y_name='value', y_type_key='number',
+                                             series_info=series_info)
+        combined_data = []
+        try:
+            # --- Process Actual Data ---
+            if monthly_avg_ts is not None and not monthly_avg_ts.empty:
+                logger.info(f"[{fig_key}] Processing actual monthly average TS (length: {len(monthly_avg_ts)}).")
+
+                # Ensure NaNs (representing missing months from reindex) are filled with 0
+                # This is the specific change requested for fig12.
+                monthly_avg_ts_filled = monthly_avg_ts.fillna(0)
+                nan_after_fill = monthly_avg_ts_filled.isnull().sum()
+                if nan_after_fill > 0:
+                     logger.warning(f"[{fig_key}] Found {nan_after_fill} NaNs even after fillna(0). Check input TS.")
+
+                # Convert Series to DataFrame for processing
+                actual_df = monthly_avg_ts_filled.reset_index().rename(columns={'index': 'sort_date', monthly_avg_ts_filled.name or 0: 'value'})
+
+                # Prepare final structure for actual data
+                actual_df['type'] = 'actual'
+                actual_df['lower_ci'] = None
+                actual_df['upper_ci'] = None
+                actual_df['value'] = actual_df['value'].astype(float)
+                # Format date as 'YYYY-MM' string for the unified output column
+                actual_df[FORECAST_DATE_COL] = actual_df['sort_date'].dt.strftime('%Y-%m')
+
+                combined_data.extend(actual_df[[FORECAST_DATE_COL, 'value', 'type', 'lower_ci', 'upper_ci']].to_dict(orient='records'))
+                logger.info(f"[{fig_key}] Added {len(actual_df)} actual monthly data points (zero-filled) to combined list.")
+            else:
+                logger.warning(f"[{fig_key}] Actual monthly average time series is missing or empty.")
+
+
+            # --- Process Forecast Data (Remains the same) ---
             if monthly_forecast is not None and not monthly_forecast.empty:
-                required = [DATE_COLUMN_OUTPUT, 'forecast', 'lower_ci', 'upper_ci']
-                if all(c in monthly_forecast.columns for c in required):
+                required = [FORECAST_DATE_COL, 'forecast', 'lower_ci', 'upper_ci'] # Use unified date col name
+                if all(col in monthly_forecast.columns for col in required):
                     fc_df = monthly_forecast[required].copy()
-                    if not pd.api.types.is_string_dtype(fc_df[DATE_COLUMN_OUTPUT]): fc_df[DATE_COLUMN_OUTPUT] = pd.to_datetime(fc_df[DATE_COLUMN_OUTPUT]).dt.strftime('%Y-%m')
+                    # Ensure forecast date is string YYYY-MM
+                    if not pd.api.types.is_string_dtype(fc_df[FORECAST_DATE_COL]):
+                        logger.warning(f"[{fig_key}] Monthly forecast date column '{FORECAST_DATE_COL}' is not string. Attempting conversion to YYYY-MM.")
+                        fc_df[FORECAST_DATE_COL] = pd.to_datetime(fc_df[FORECAST_DATE_COL]).dt.strftime('%Y-%m')
+
                     fc_df.rename(columns={'forecast': 'value'}, inplace=True); fc_df['type'] = 'forecast'
                     for col in ['value', 'lower_ci', 'upper_ci']: fc_df[col] = pd.to_numeric(fc_df[col], errors='coerce').fillna(0).astype(float).round(2)
                     combined_data.extend(fc_df.to_dict(orient='records'))
-                    logger.info(f"[{fig_key}] Added {len(fc_df)} monthly forecast points.")
-                else: logger.warning(f"{fig_key}: Monthly forecast DataFrame missing required columns.")
-            else: logger.info(f"[{fig_key}] No monthly forecast data available.")
+                    logger.info(f"[{fig_key}] Added {len(fc_df)} forecast monthly data points to combined list.")
+                else: logger.warning(f"{fig_key}: Monthly forecast DataFrame missing required columns: {required}")
+            else:
+                 logger.info(f"[{fig_key}] No monthly forecast data provided or it's empty.")
 
-            if not combined_data: logger.warning(f"{fig_key} (lang={lang}): No actual or forecast monthly data."); return ChartData(metadata=metadata, data=[])
-            combined_data = sorted(combined_data, key=lambda x: x.get(DATE_COLUMN_OUTPUT, ''))
+
+            # --- Final Combination and Sorting ---
+            if not combined_data:
+                logger.warning(f"{fig_key} (lang={lang}): No actual or forecast monthly data available after processing.");
+                return ChartData(metadata=metadata, data=[])
+
+            # Sort by the date string ('YYYY-MM')
+            combined_data = sorted(combined_data, key=lambda x: x.get(FORECAST_DATE_COL, ''))
             cleaned_combined_data = [{k: (None if pd.isna(v) else v) for k, v in row.items()} for row in combined_data]
+
+            logger.info(f"[{fig_key}] Prepared final monthly data with {len(cleaned_combined_data)} points (actuals zero-filled).")
             return ChartData(metadata=metadata, data=cleaned_combined_data)
-        except Exception as e: logger.error(f"Error preparing {fig_key} data (lang={lang}): {e}", exc_info=True); return ChartData(metadata=metadata, data=[])
+        except Exception as e:
+            logger.error(f"Error preparing {fig_key} data (lang={lang}): {e}", exc_info=True)
+            return ChartData(metadata=metadata, data=[])
+    # --- MODIFICATION END for fig12 ---
 
     def _prepare_fig13_data(self, product_flow: Optional[pd.DataFrame], lang: str) -> Optional[ChartData]:
-        fig_key = 'fig13'; metadata = self._get_chart_metadata(fig_key, lang, ChartType.BAR, x_name='sales_quantity', y_name='name', series_info=[{'internal_name': 'sales', 'title_key': 'sales', 'color': 'value-based'}])
-        if not MODELS_IMPORTED or product_flow is None or product_flow.empty: return ChartData(metadata=metadata, data=[])
+        fig_key = 'fig13'
+        if not MODELS_IMPORTED: logger.error(f"{fig_key} (lang={lang}): Pydantic models not imported."); return None
+
+        series_info = [{'internal_name': 'sales', 'title_key': 'sales', 'color': 'value-based'}]
+        metadata = self._get_chart_metadata(fig_key, lang, ChartType.BAR,
+                                            x_name='sales_quantity', x_type_key='number',
+                                            y_name='name', y_type_key='category',
+                                            series_info=series_info)
+
+        if product_flow is None or product_flow.empty:
+            logger.warning(f"{fig_key}: Product flow data missing.");
+            return ChartData(metadata=metadata, data=[])
+
         try:
             pf = product_flow;
-            if not all(c in pf.columns for c in ['sales_quantity', 'name']): logger.error(f"{fig_key}: Missing required columns."); return ChartData(metadata=metadata, data=[])
+            if not all(c in pf.columns for c in ['sales_quantity', 'name']):
+                 logger.error(f"{fig_key}: Missing required columns ['sales_quantity', 'name']")
+                 return ChartData(metadata=metadata, data=[])
+
             sold_products = pf[pf['sales_quantity'] > 0];
-            if sold_products.empty: return ChartData(metadata=metadata, data=[])
-            bottom10 = sold_products.nsmallest(10, 'sales_quantity'); x_axis_title_display = metadata.x_axis.title; y_axis_title_display = metadata.y_axis.title
+            if sold_products.empty:
+                 logger.info(f"{fig_key}: No products with sales > 0 found.")
+                 return ChartData(metadata=metadata, data=[])
+
+            bottom10 = sold_products.nsmallest(10, 'sales_quantity')
+
+            x_axis_title_display = metadata.x_axis.title
+            y_axis_title_display = metadata.y_axis.title
+
             data_df = bottom10[['name', 'sales_quantity']].rename(columns={'name': y_axis_title_display, 'sales_quantity': x_axis_title_display})
-            data = data_df.to_dict(orient='records'); data = [{k: (None if pd.isna(v) else (float(v) if isinstance(v, (int, float, np.number)) else str(v))) for k, v in row.items()} for row in data]
+            data = data_df.to_dict(orient='records')
+            data = [{k: (None if pd.isna(v) else (float(v) if isinstance(v, (int, float, np.number)) else str(v)))
+                     for k, v in row.items()} for row in data]
+
             return ChartData(metadata=metadata, data=data)
-        except Exception as e: logger.error(f"Error preparing {fig_key} data (lang={lang}): {e}", exc_info=True); return ChartData(metadata=metadata, data=[])
+        except Exception as e:
+            logger.error(f"Error preparing {fig_key} data (lang={lang}): {e}", exc_info=True)
+            return ChartData(metadata=metadata, data=[])
 
     def _prepare_fig15_data(self, product_flow: Optional[pd.DataFrame], lang: str) -> Optional[ChartData]:
-        fig_key = 'fig15'; metadata = self._get_chart_metadata(fig_key, lang, ChartType.BAR, x_name='sales_quantity', y_name='name', series_info=[{'internal_name': 'sales', 'title_key': 'sales', 'color': 'value-based'}])
-        if not MODELS_IMPORTED or product_flow is None or product_flow.empty: return ChartData(metadata=metadata, data=[])
+        fig_key = 'fig15'
+        if not MODELS_IMPORTED: logger.error(f"{fig_key} (lang={lang}): Pydantic models not imported."); return None
+
+        series_info = [{'internal_name': 'sales', 'title_key': 'sales', 'color': 'value-based'}]
+        metadata = self._get_chart_metadata(fig_key, lang, ChartType.BAR,
+                                            x_name='sales_quantity', x_type_key='number',
+                                            y_name='name', y_type_key='category',
+                                            series_info=series_info)
+
+        if product_flow is None or product_flow.empty:
+            logger.warning(f"{fig_key}: Product flow data missing.");
+            return ChartData(metadata=metadata, data=[])
+
         try:
             pf = product_flow;
-            if not all(c in pf.columns for c in ['sales_quantity', 'name']): logger.error(f"{fig_key}: Missing required columns."); return ChartData(metadata=metadata, data=[])
+            if not all(c in pf.columns for c in ['sales_quantity', 'name']):
+                 logger.error(f"{fig_key}: Missing required columns ['sales_quantity', 'name']")
+                 return ChartData(metadata=metadata, data=[])
+
             sold_products = pf[pf['sales_quantity'] > 0];
-            if sold_products.empty: return ChartData(metadata=metadata, data=[])
-            top10 = sold_products.nlargest(10, 'sales_quantity'); x_axis_title_display = metadata.x_axis.title; y_axis_title_display = metadata.y_axis.title
+            if sold_products.empty:
+                 logger.info(f"{fig_key}: No products with sales > 0 found.")
+                 return ChartData(metadata=metadata, data=[])
+
+            top10 = sold_products.nlargest(10, 'sales_quantity')
+
+            x_axis_title_display = metadata.x_axis.title
+            y_axis_title_display = metadata.y_axis.title
+
             data_df = top10[['name', 'sales_quantity']].rename(columns={'name': y_axis_title_display, 'sales_quantity': x_axis_title_display})
-            data = data_df.to_dict(orient='records'); data = [{k: (None if pd.isna(v) else (float(v) if isinstance(v, (int, float, np.number)) else str(v))) for k, v in row.items()} for row in data]
+            data = data_df.to_dict(orient='records')
+            data = [{k: (None if pd.isna(v) else (float(v) if isinstance(v, (int, float, np.number)) else str(v)))
+                     for k, v in row.items()} for row in data]
+
             return ChartData(metadata=metadata, data=data)
-        except Exception as e: logger.error(f"Error preparing {fig_key} data (lang={lang}): {e}", exc_info=True); return ChartData(metadata=metadata, data=[])
+        except Exception as e:
+            logger.error(f"Error preparing {fig_key} data (lang={lang}): {e}", exc_info=True)
+            return ChartData(metadata=metadata, data=[])
 
     def _prepare_fig17_data(self, outstanding_amounts: Optional[pd.DataFrame], lang: str) -> Optional[ChartData]:
-        fig_key = 'fig17'; metadata = self._get_chart_metadata(fig_key, lang, ChartType.BAR, x_name='user_id', x_type_key='category', x_title_key='title', y_name='outstanding_amount', y_type_key='number', y_title_key='title', series_info=[{'internal_name': 'amount', 'title_key': 'amount', 'color': 'value-based'}])
-        if not MODELS_IMPORTED or outstanding_amounts is None or outstanding_amounts.empty: return ChartData(metadata=metadata, data=[])
+        fig_key = 'fig17'
+        if not MODELS_IMPORTED: logger.error(f"{fig_key} (lang={lang}): Pydantic models not imported."); return None
+
+        series_info = [{'internal_name': 'amount', 'title_key': 'amount', 'color': 'value-based'}]
+        metadata = self._get_chart_metadata(fig_key, lang, ChartType.BAR,
+                                            x_name='user_id', x_type_key='category', x_title_key='title',
+                                            y_name='outstanding_amount', y_type_key='number', y_title_key='title',
+                                            series_info=series_info)
+
+        if outstanding_amounts is None or outstanding_amounts.empty:
+            logger.info(f"{fig_key} (lang={lang}): Outstanding amounts missing or empty.");
+            return ChartData(metadata=metadata, data=[])
+
         try:
-            user_id_col = config.required_columns['invoice_deferreds'][4]; amount_col_out = 'outstanding_amount'
-            if not (user_id_col in outstanding_amounts.columns and amount_col_out in outstanding_amounts.columns): logger.error(f"[{fig_key}] Missing required columns."); return ChartData(metadata=metadata, data=[])
+            user_id_col = config.required_columns['invoice_deferreds'][4]
+            amount_col_out = 'outstanding_amount'
+            if not (user_id_col in outstanding_amounts.columns and amount_col_out in outstanding_amounts.columns):
+                 logger.error(f"[{fig_key}] Missing required columns '{user_id_col}' or '{amount_col_out}'")
+                 return ChartData(metadata=metadata, data=[])
+
             outstanding_sorted = outstanding_amounts.sort_values(amount_col_out, ascending=False).head(20)
-            if user_id_col not in outstanding_sorted.columns or amount_col_out not in outstanding_sorted.columns: logger.error(f"[{fig_key}] Columns disappeared after sorting/head."); return ChartData(metadata=metadata, data=[])
-            outstanding_sorted[user_id_col] = outstanding_sorted[user_id_col].astype(str); x_axis_title_display = metadata.x_axis.title; y_axis_title_display = metadata.y_axis.title
-            data_df = outstanding_sorted[[user_id_col, amount_col_out]].rename(columns={user_id_col: x_axis_title_display, amount_col_out: y_axis_title_display})
-            data = data_df.to_dict(orient='records'); data = [{k: (None if pd.isna(v) else v) for k, v in row.items()} for row in data]
+            if user_id_col not in outstanding_sorted.columns or amount_col_out not in outstanding_sorted.columns:
+                 logger.error(f"[{fig_key}] Columns '{user_id_col}' or '{amount_col_out}' disappeared after sorting/head.")
+                 return ChartData(metadata=metadata, data=[])
+
+            outstanding_sorted[user_id_col] = outstanding_sorted[user_id_col].astype(str)
+
+            x_axis_title_display = metadata.x_axis.title
+            y_axis_title_display = metadata.y_axis.title
+
+            data_df = outstanding_sorted[[user_id_col, amount_col_out]].rename(columns={
+                user_id_col: x_axis_title_display,
+                amount_col_out: y_axis_title_display
+            })
+            data = data_df.to_dict(orient='records')
+            data = [{k: (None if pd.isna(v) else v) for k, v in row.items()} for row in data]
+
             return ChartData(metadata=metadata, data=data)
-        except Exception as e: logger.error(f"Error preparing {fig_key} data (lang={lang}): {e}", exc_info=True); return ChartData(metadata=metadata, data=[])
+
+        except Exception as e:
+            logger.error(f"Error preparing {fig_key} data (lang={lang}): {e}", exc_info=True)
+            return ChartData(metadata=metadata, data=[])
 
 
     # --- ** _save_results_to_disk & run_pipeline ** ---
@@ -1319,17 +1670,13 @@ class DataPipeline:
                     if chart_data and isinstance(chart_data, ChartData):
                         file_path = client_dir / f"{fig_name}_{lang}.json"
                         try:
-                            # Use model_dump_json if available (Pydantic v2+)
                             if hasattr(chart_data, 'model_dump_json'):
                                 with open(file_path, "w", encoding='utf-8') as f:
                                     f.write(chart_data.model_dump_json(indent=2, exclude_none=True))
                             else:
-                                # Fallback for older Pydantic or dummy class
                                 with open(file_path, "w", encoding='utf-8') as f:
-                                    # A basic way to serialize if model_dump_json isn't there
-                                    # This might not be perfect depending on ChartData structure
                                     json.dump({'metadata': vars(chart_data.metadata), 'data': chart_data.data},
-                                              f, indent=2, ensure_ascii=False, default=str) # Use default=str for complex types
+                                              f, indent=2, ensure_ascii=False, default=str)
                             logger.debug(f"Saved {file_path.name} ({prep_time:.3f}s)")
                         except Exception as e_write:
                             logger.error(f"Failed to write {file_path}: {e_write}")
@@ -1370,17 +1717,16 @@ class DataPipeline:
 
             daily_forecast_results = pd.DataFrame()
             if FORECASTING_AVAILABLE:
-                self._run_forecasting() # Includes 360-day check
+                self._run_forecasting()
                 daily_forecast_results = self.forecast_data
             else: logger.warning("Daily forecasting modules unavailable. Skipping.")
 
             monthly_forecast_results = pd.DataFrame()
             if MONTHLY_FORECASTING_AVAILABLE:
-                self._run_monthly_forecasting() # Includes 12-month check
+                self._run_monthly_forecasting()
                 monthly_forecast_results = self.monthly_avg_invoice_forecast
             else: logger.warning("Monthly forecasting modules unavailable. Skipping.")
 
-            # Save results to disk (as originally intended for this function)
             self._save_results_to_disk(client_id, analysis_results, daily_forecast_results, monthly_forecast_results)
 
             end_run_time = time.time()
