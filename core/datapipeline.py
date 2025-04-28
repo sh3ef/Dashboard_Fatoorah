@@ -1,9 +1,8 @@
 # core/datapipeline.py
 import pandas as pd
 import numpy as np
-# Removed plotly imports as figures are not generated here, only data
 from datetime import datetime, timedelta
-from core.config import config # Import updated settings
+=from core.config import config 
 import logging
 import os
 import traceback
@@ -596,9 +595,11 @@ class DataPipeline:
 
             # --- *** START MODIFICATION: Minimum Observations for Daily Forecast *** ---
             min_daily_obs = config.analysis_params.get('min_daily_obs_for_forecast', 360) # Get from config
+            # Use the original date column from feature engineering output for length check
+            date_col_check = features_df_daily.columns[0] # Assuming first column is date after feature eng
             if len(features_df_daily) < min_daily_obs:
                 logger.warning(
-                    f"Daily historical data ({len(features_df_daily)} days after feature eng.) "
+                    f"Daily historical data ({len(features_df_daily)} days) " # Use length directly
                     f"is less than the required minimum ({min_daily_obs}). Skipping daily forecast."
                 )
                 self.forecast_data = pd.DataFrame() # Ensure it's empty
@@ -1413,42 +1414,79 @@ class DataPipeline:
              {'internal_name': 'forecast', 'title_key': 'forecast', 'color': 'red'},
              {'internal_name': 'ci', 'title_key': 'ci', 'color': 'rgba(255, 0, 0, 0.15)'}
          ]
-        # Use generic keys 'title' from ar.json
         metadata = self._get_chart_metadata(fig_key, lang, ChartType.LINE,
-                                             x_name=FORECAST_DATE_COL, x_type_key='date', # x_title_key removed
-                                             y_name='value', y_type_key='number', # y_title_key removed
+                                             x_name=FORECAST_DATE_COL, x_type_key='date',
+                                             y_name='value', y_type_key='number',
                                              series_info=series_info)
         combined_data = []
+        actual_df = pd.DataFrame() # Initialize as empty
+
         try:
             sid = self.processed_data.get('sale_invoices_details')
-            if sid is not None and not sid.empty:
+            si = self.processed_data.get('sale_invoices') # Need sale_invoices for date range
+
+            if sid is not None and not sid.empty and si is not None and not si.empty and 'created_at_dt' in si.columns:
                 sid_total_col = config.required_columns['sale_invoices_details'][4]
                 if 'created_at_per_day' in sid.columns and sid_total_col in sid.columns:
-                    daily_actual_all = sid.groupby('created_at_per_day')[sid_total_col].sum().reset_index()
-                    if not daily_actual_all.empty:
-                        daily_actual_all[FORECAST_DATE_COL] = pd.to_datetime(daily_actual_all['created_at_per_day']).dt.strftime('%Y-%m-%d')
-                        daily_actual_all.rename(columns={sid_total_col: 'value'}, inplace=True)
-                        actual_df = daily_actual_all[[FORECAST_DATE_COL, 'value']].copy()
+                    logger.debug(f"[{fig_key}] Aggregating actual daily sales...")
+                    daily_actual_aggregated = sid.groupby('created_at_per_day')[sid_total_col].sum().reset_index()
+
+                    # --- *** START: Fill missing dates for actual data *** ---
+                    if not daily_actual_aggregated.empty:
+                        # Determine the full date range from sale_invoices
+                        min_date = si['created_at_dt'].min().normalize()
+                        max_date = si['created_at_dt'].max().normalize()
+                        logger.debug(f"[{fig_key}] Full date range for actuals: {min_date.date()} to {max_date.date()}")
+                        all_days_idx = pd.date_range(start=min_date, end=max_date, freq='D')
+                        full_range_df = pd.DataFrame(index=all_days_idx)
+
+                        # Prepare aggregated data for merge
+                        daily_actual_aggregated['created_at_per_day'] = pd.to_datetime(daily_actual_aggregated['created_at_per_day'])
+                        daily_actual_aggregated = daily_actual_aggregated.set_index('created_at_per_day')
+
+                        # Merge and fill NaNs with 0
+                        actual_df_complete = full_range_df.merge(daily_actual_aggregated, left_index=True, right_index=True, how='left')
+                        actual_df_complete.rename(columns={sid_total_col: 'value'}, inplace=True)
+                        actual_df_complete['value'] = actual_df_complete['value'].fillna(0)
+                        actual_df_complete = actual_df_complete.reset_index().rename(columns={'index': FORECAST_DATE_COL})
+
+                        # Convert date format for final output
+                        actual_df_complete[FORECAST_DATE_COL] = pd.to_datetime(actual_df_complete[FORECAST_DATE_COL]).dt.strftime('%Y-%m-%d')
+                        logger.info(f"[{fig_key}] Actual daily sales data prepared with {len(actual_df_complete)} days (including zeros).")
+
+                        actual_df = actual_df_complete[[FORECAST_DATE_COL, 'value']].copy() # Keep relevant columns
                         actual_df['type'] = 'actual'; actual_df['lower_ci'] = None; actual_df['upper_ci'] = None;
                         actual_df['value'] = actual_df['value'].astype(float)
                         combined_data.extend(actual_df.to_dict(orient='records'))
+                    else:
+                         logger.warning(f"[{fig_key}] No actual daily sales data after aggregation.")
+                    # --- *** END: Fill missing dates for actual data *** ---
+                else:
+                     logger.warning(f"[{fig_key}] Missing required columns for aggregation ('created_at_per_day' or '{sid_total_col}').")
+            else:
+                 logger.warning(f"[{fig_key}] Processed SID or SI data is missing or empty. Cannot calculate actual daily sales.")
 
+
+            # --- Combine with forecast data ---
             if daily_forecast is not None and not daily_forecast.empty:
-                required = [FORECAST_DATE_COL, 'forecast', 'lower_ci', 'upper_ci']
+                required = [DATE_COLUMN_OUTPUT, 'forecast', 'lower_ci', 'upper_ci']
                 if all(col in daily_forecast.columns for col in required):
                     fc_df = daily_forecast[required].copy()
-                    if not pd.api.types.is_string_dtype(fc_df[FORECAST_DATE_COL]):
-                         fc_df[FORECAST_DATE_COL] = pd.to_datetime(fc_df[FORECAST_DATE_COL]).dt.strftime('%Y-%m-%d')
+                    if not pd.api.types.is_string_dtype(fc_df[DATE_COLUMN_OUTPUT]):
+                         fc_df[DATE_COLUMN_OUTPUT] = pd.to_datetime(fc_df[DATE_COLUMN_OUTPUT]).dt.strftime('%Y-%m-%d')
                     fc_df.rename(columns={'forecast': 'value'}, inplace=True); fc_df['type'] = 'forecast'
                     for col in ['value', 'lower_ci', 'upper_ci']: fc_df[col] = pd.to_numeric(fc_df[col], errors='coerce').fillna(0).astype(float).round(2)
                     combined_data.extend(fc_df.to_dict(orient='records'))
+                    logger.info(f"[{fig_key}] Added {len(fc_df)} forecast points.")
                 else: logger.warning(f"{fig_key}: Daily forecast DataFrame missing required columns: {required}")
+            else:
+                logger.info(f"[{fig_key}] No forecast data available to combine.")
 
             if not combined_data:
-                logger.warning(f"{fig_key} (lang={lang}): No actual or forecast data available.");
+                logger.warning(f"{fig_key} (lang={lang}): No actual or forecast data available in the end.");
                 return ChartData(metadata=metadata, data=[])
 
-            combined_data = sorted(combined_data, key=lambda x: x.get(FORECAST_DATE_COL, ''))
+            combined_data = sorted(combined_data, key=lambda x: x.get(DATE_COLUMN_OUTPUT, ''))
             cleaned_combined_data = [{k: (None if pd.isna(v) else v) for k, v in row.items()} for row in combined_data]
             return ChartData(metadata=metadata, data=cleaned_combined_data)
         except Exception as e:
@@ -1464,37 +1502,58 @@ class DataPipeline:
              {'internal_name': 'forecast', 'title_key': 'forecast', 'color': 'firebrick'},
              {'internal_name': 'ci', 'title_key': 'ci', 'color': 'rgba(255, 100, 100, 0.15)'}
          ]
-        # Use generic keys 'title' from ar.json
         metadata = self._get_chart_metadata(fig_key, lang, ChartType.LINE,
-                                             x_name=FORECAST_DATE_COL, x_type_key='category', # x_title_key removed
-                                             y_name='value', y_type_key='number', # y_title_key removed
+                                             x_name=DATE_COLUMN_OUTPUT, x_type_key='category',
+                                             y_name='value', y_type_key='number',
                                              series_info=series_info)
         combined_data = []
+        actual_df = pd.DataFrame() # Initialize
+
         try:
             if monthly_avg_ts is not None and not monthly_avg_ts.empty:
-                actual_df = monthly_avg_ts.reset_index().rename(columns={'index': 'sort_date', monthly_avg_ts.name or 0: 'value'})
+                # --- *** START: Ensure complete monthly series *** ---
+                logger.debug(f"[{fig_key}] Preparing complete actual monthly average data...")
+                # Ensure index is DatetimeIndex at the start of the month
+                if not isinstance(monthly_avg_ts.index, pd.DatetimeIndex):
+                    monthly_avg_ts.index = pd.to_datetime(monthly_avg_ts.index)
+                monthly_avg_ts = monthly_avg_ts.asfreq('MS') # Ensure MS frequency
+
+                # Reindex to cover the full range and fill NaNs with 0
+                min_date = monthly_avg_ts.index.min()
+                max_date = monthly_avg_ts.index.max()
+                all_months_idx = pd.date_range(start=min_date, end=max_date, freq='MS')
+                complete_ts = monthly_avg_ts.reindex(all_months_idx).fillna(0)
+                logger.info(f"[{fig_key}] Actual monthly data prepared with {len(complete_ts)} months (including zeros).")
+                # --- *** END: Ensure complete monthly series *** ---
+
+                actual_df = complete_ts.reset_index().rename(columns={'index': 'sort_date', complete_ts.name or 0: 'value'})
                 actual_df['type'] = 'actual'; actual_df['lower_ci'] = None; actual_df['upper_ci'] = None
                 actual_df['value'] = actual_df['value'].astype(float)
-                actual_df[FORECAST_DATE_COL] = actual_df['sort_date'].dt.strftime('%Y-%m')
-                combined_data.extend(actual_df[[FORECAST_DATE_COL, 'value', 'type', 'lower_ci', 'upper_ci']].to_dict(orient='records'))
+                actual_df[DATE_COLUMN_OUTPUT] = actual_df['sort_date'].dt.strftime('%Y-%m') # Format for output
+                combined_data.extend(actual_df[[DATE_COLUMN_OUTPUT, 'value', 'type', 'lower_ci', 'upper_ci']].to_dict(orient='records'))
+            else:
+                 logger.warning(f"[{fig_key}] monthly_avg_invoice_ts is missing or empty. Cannot prepare actual data.")
 
             if monthly_forecast is not None and not monthly_forecast.empty:
-                required = [FORECAST_DATE_COL, 'forecast', 'lower_ci', 'upper_ci']
+                required = [DATE_COLUMN_OUTPUT, 'forecast', 'lower_ci', 'upper_ci']
                 if all(c in monthly_forecast.columns for c in required):
                     fc_df = monthly_forecast[required].copy()
-                    if not pd.api.types.is_string_dtype(fc_df[FORECAST_DATE_COL]):
-                        logger.warning(f"{fig_key}: Monthly forecast date column is not string. Attempting conversion.")
-                        fc_df[FORECAST_DATE_COL] = pd.to_datetime(fc_df[FORECAST_DATE_COL]).dt.strftime('%Y-%m')
+                    if not pd.api.types.is_string_dtype(fc_df[DATE_COLUMN_OUTPUT]):
+                        logger.warning(f"{fig_key}: Monthly forecast date column is not string. Attempting conversion to YYYY-MM.")
+                        fc_df[DATE_COLUMN_OUTPUT] = pd.to_datetime(fc_df[DATE_COLUMN_OUTPUT]).dt.strftime('%Y-%m')
                     fc_df.rename(columns={'forecast': 'value'}, inplace=True); fc_df['type'] = 'forecast'
                     for col in ['value', 'lower_ci', 'upper_ci']: fc_df[col] = pd.to_numeric(fc_df[col], errors='coerce').fillna(0).astype(float).round(2)
                     combined_data.extend(fc_df.to_dict(orient='records'))
+                    logger.info(f"[{fig_key}] Added {len(fc_df)} monthly forecast points.")
                 else: logger.warning(f"{fig_key}: Monthly forecast DataFrame missing required columns: {required}")
+            else:
+                logger.info(f"[{fig_key}] No monthly forecast data available to combine.")
 
             if not combined_data:
-                logger.warning(f"{fig_key} (lang={lang}): No actual or forecast monthly data available.");
+                logger.warning(f"{fig_key} (lang={lang}): No actual or forecast monthly data available in the end.");
                 return ChartData(metadata=metadata, data=[])
 
-            combined_data = sorted(combined_data, key=lambda x: x.get(FORECAST_DATE_COL, ''))
+            combined_data = sorted(combined_data, key=lambda x: x.get(DATE_COLUMN_OUTPUT, ''))
             cleaned_combined_data = [{k: (None if pd.isna(v) else v) for k, v in row.items()} for row in combined_data]
             return ChartData(metadata=metadata, data=cleaned_combined_data)
         except Exception as e:
@@ -1767,4 +1826,3 @@ class DataPipeline:
         except Exception as e: logger.error(f"Error getting stock table: {e}", exc_info=True); return pd.DataFrame()
 
 # --- End of core/datapipeline.py ---
-
