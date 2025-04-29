@@ -1,4 +1,4 @@
-# dashboard_app.py - V5.3 - Fix Enum Comparison for Chart Type
+# dashboard_app.py - V5.3 - Fix Enum Comparison for Chart Type & Removed Trendline from Fig7
 
 import streamlit as st
 import pandas as pd
@@ -74,7 +74,7 @@ def get_clients_from_db(_pipeline_ref) -> List[str]:
     client_ids = []
     if not pipeline or not pipeline.engine: st.error("Database connection unavailable."); logger.error("Cannot fetch clients."); return []
     table_to_query = 'sale_invoices'; client_id_col_name_in_config = 'client_id'; actual_client_id_col = 'client_id'
-    if 'sale_invoices' in config.required_columns and client_id_col_name_in_config in config.required_columns['sale_invoices']:
+    if config and 'required_columns' in dir(config) and 'sale_invoices' in config.required_columns and client_id_col_name_in_config in config.required_columns['sale_invoices']:
         try: client_id_col_index = config.required_columns['sale_invoices'].index(client_id_col_name_in_config); actual_client_id_col = config.required_columns['sale_invoices'][client_id_col_index]; logger.info(f"Found client ID column '{actual_client_id_col}' from config.")
         except ValueError: logger.warning(f"'{client_id_col_name_in_config}' not found in config list, using default '{actual_client_id_col}'.")
     else: logger.warning(f"Config definition missing or '{client_id_col_name_in_config}' not found, using default '{actual_client_id_col}'.")
@@ -277,10 +277,15 @@ def create_plotly_figure_replica(fig_key: str, chart_data_obj: Optional[ChartDat
                 if not x_col_price: raise ValueError(f"Could not find X-axis (Sale Price) column for fig7 (different from Y='{y_col_qty}').")
                 col_name_hover = find_column(df, [trans_product, 'name', 'Product Name'], title, exclude=x_col_price);
                 hover_cols = [col_name_hover] if col_name_hover else None;
-                x_is_numeric = pd.api.types.is_numeric_dtype(df[x_col_price]); trendline_opt = "lowess" if x_is_numeric else None
-                if not x_is_numeric: logger.warning(f"[{fig_key}] X-axis ('{x_col_price}') not numeric. Trendline disabled.")
+                # --- إزالة حساب خط الاتجاه هنا ---
+                # x_is_numeric = pd.api.types.is_numeric_dtype(df[x_col_price]);
+                # trendline_opt = "lowess" if x_is_numeric else None # تم تعيينها مباشرة إلى None بالأسفل
+                # if not x_is_numeric: logger.warning(f"[{fig_key}] X-axis ('{x_col_price}') not numeric. Trendline disabled.")
                 df_plot = df.copy(); x_col_plot = x_col_price
-                fig = px.scatter(df_plot, x=x_col_plot, y=y_col_qty, title=title, labels={x_col_plot: x_title_trans, y_col_qty: y_title_trans}, trendline=trendline_opt, hover_data=hover_cols)
+                fig = px.scatter(df_plot, x=x_col_plot, y=y_col_qty, title=title,
+                                 labels={x_col_plot: x_title_trans, y_col_qty: y_title_trans},
+                                 trendline=None, # <-- التعديل: تعطيل خط الاتجاه دائماً
+                                 hover_data=hover_cols)
             elif fig_key == 'fig9':
                 y_col_stock = find_column(df, [y_title_trans, trans_current_stock, 'current_stock'], title);
                 if x_col_actual and y_col_stock: fig = px.bar(df, x=x_col_actual, y=y_col_stock, title=title, labels={x_col_actual: x_title_trans, y_col_stock: y_title_trans}); fig.update_layout(xaxis={'categoryorder':'total ascending'})
