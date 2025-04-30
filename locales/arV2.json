@@ -1,0 +1,313 @@
+{
+  "common": {
+    "product": "المنتج",
+    "quantity": "الكمية",
+    "quantity_sold": "الكمية المباعة",
+    "stock": "المخزون",
+    "supplier_id": "معرف المورد",
+    "outstanding_amount": "المبلغ المستحق",
+    "amount": "المبلغ",
+    "categories": "الفئات",
+    "values": "القيم",
+    "efficiency_category": "فئة الكفاءة",
+    "total_quantity": "إجمالي الكمية",
+    "cogs": "تكلفة البضاعة",
+    "margin": "هامش الربح",
+    "revenue": "الإيرادات",
+    "profit": "الربح",
+    "cumulative_percentage": "النسبة التراكمية %",
+    "sale_price": "سعر البيع",
+    "stagnancy_period": "فترة الركود",
+    "days_since_last_sale": "أيام منذ آخر بيع",
+    "other": "أخرى",
+    "date": "التاريخ",
+    "profit_change": "تغير الربح",
+    "daily_profit_change": "التغير اليومي في الربح",
+    "error_prefix": "مشكلة بيانات",
+    "zero_line": "خط الصفر",
+    "product_name": "اسم المنتج",
+    "last_sale_date": "آخر بيع",
+    "current_stock": "المخزون",
+    "product_id": "المعرف",
+    "series": "السلاسل",
+    "type": "النوع",
+    "6_month_limit": "حد 6 أشهر"
+  },
+  "frequencies": {
+    "daily": "يومي",
+    "weekly": "أسبوعي",
+    "monthly": "شهري",
+    "quarterly": "ربع سنوي"
+  },
+  "axis_types": {
+    "category": "فئة",
+    "number": "رقم",
+    "date": "تاريخ",
+    "text": "نص"
+  },
+  "efficiency_labels": {
+    "Undersupplied": "نقص توريد",
+    "Balanced": "متوازن",
+    "Oversupplied": "فائض توريد",
+    "N/A": "غير متاح"
+  },
+  "stagnant_labels": {
+    "3-6 months": "3-6 أشهر",
+    "6-12 months": "6-12 شهر",
+    ">1 year": "> 1 سنة"
+  },
+  "error": {
+      "no_data": "لا توجد بيانات متاحة لهذا الرسم البياني.",
+      "insufficient_data": "بيانات غير كافية لإنشاء رسم بياني ذي معنى.",
+      "calculation_error": "حدث خطأ أثناء حساب البيانات.",
+      "config_error": "خطأ في إعدادات هذا الرسم البياني.",
+      "no_results_found": "لم يتم العثور على بيانات ذات صلة بعد تطبيق الفلاتر.",
+      "forecast_requires_more_data": "هناك حاجة إلى مزيد من البيانات التاريخية لإنشاء التنبؤ.",
+      "no_series_plotted": "تعذر رسم أي سلسلة بيانات."
+  },
+  "fig1": {
+    "title": " المخزون مقابل المبيعات (أعلى 20)",
+    "description": "كمية المخزون الحالي مقابل كمية المبيعات لأعلى 20 منتج مبيعًا",
+    "frequency": "weekly",
+    "x_axis": { "title": "المنتج", "type": "category" },
+    "y_axis": { "title": "الكمية", "type": "number" },
+    "series": { "stock": "المخزون الحالي", "sales": "المبيعات" },
+    "errors": {
+        "no_product_flow": "بيانات تدفق المنتج مفقودة أو فارغة.",
+        "no_sales": "لم يتم تسجيل مبيعات لأي منتج.",
+        "insufficient_sales_period": "سجل مبيعات غير كافٍ (يوصى بشهر واحد على الأقل).",
+        "config_error": "أعمدة مطلوبة مفقودة.",
+        "no_results_found": "لم يتم العثور على منتجات لأعلى 20.",
+        "calculation_error": "خطأ أثناء تجهيز البيانات."
+    }
+  },
+  "fig2": {
+    "title": " كفاءة المخزون",
+    "description": "توزيع المنتجات حسب حالة كفاءة المخزون",
+    "frequency": "monthly",
+    "x_axis": { "title": "فئات الكفاءة", "type": "category" },
+    "y_axis": { "title": "عدد المنتجات", "type": "number" },
+    "errors": {
+        "no_product_flow": "بيانات تدفق المنتج مفقودة أو فارغة.",
+        "no_efficiency_data": "تعذر حساب كفاءة المخزون لأي منتج.",
+        "calculation_error": "فشل حساب الكفاءة أو خطأ أثناء تجهيز البيانات."
+    }
+  },
+  "fig3": {
+    "title": "تحليل الإيرادات (مع COGS)",
+    "description": "الإيرادات، تكلفة البضاعة المباعة، وهامش الربح لأعلى 20 منتج حسب الإيراد",
+    "frequency": "monthly",
+    "x_axis": { "title": "المنتج", "type": "category" },
+    "y_axis": { "title": "المبلغ", "type": "number" },
+    "series": { "revenue": "الإيرادات", "cogs": "تكلفة البضاعة", "margin": "هامش الربح" },
+    "errors": {
+        "no_product_flow": "بيانات تدفق المنتج مفقودة أو فارغة.",
+        "missing_cost_data": "سعر التكلفة (buyPrice) مفقود لجميع المنتجات.",
+        "no_sales": "لم يتم تسجيل إيرادات لأي منتج.",
+        "config_error": "أعمدة مطلوبة مفقودة لتحليل الإيرادات/التكلفة.",
+        "calculation_error": "خطأ أثناء تجهيز البيانات."
+    }
+  },
+  "fig4": {
+    "title": " المخزون الحالي مقابل المبيعات (أعلى 20)",
+    "description": "المخزون الحالي (أعمدة) مقابل كمية المبيعات (خط) لأعلى 20 منتج مبيعًا",
+    "frequency": "weekly",
+    "x_axis": { "title": "المنتج", "type": "category" },
+    "y_axis": { "title": "الكمية", "type": "number" },
+    "series": { "stock": "المخزون الحالي", "sales": "المبيعات" },
+    "errors": {
+        "no_product_flow": "بيانات تدفق المنتج مفقودة أو فارغة.",
+        "no_sales": "لم يتم تسجيل مبيعات لأي منتج.",
+        "insufficient_sales_period": "سجل مبيعات غير كافٍ (يوصى بشهر واحد على الأقل).",
+        "config_error": "أعمدة مطلوبة مفقودة.",
+        "no_results_found": "لم يتم العثور على منتجات لأعلى 20.",
+        "calculation_error": "خطأ أثناء تجهيز البيانات."
+    }
+  },
+  "fig5": {
+    "title": " مقارنة الكفاءة الإجمالية",
+    "description": "إجمالي المخزون والمبيعات مجمعة حسب فئة كفاءة المخزون",
+    "frequency": "monthly",
+    "x_axis": { "title": "فئة الكفاءة", "type": "category" },
+    "y_axis": { "title": "إجمالي الكمية", "type": "number" },
+    "series": { "stock": "إجمالي المخزون", "sales": "إجمالي المبيعات" },
+    "errors": {
+       "no_product_flow": "بيانات تدفق المنتج مفقودة أو فارغة.",
+       "no_efficiency_data": "لم يتم العثور على بيانات لفئات الكفاءة.",
+       "config_error": "أعمدة مطلوبة مفقودة لتجميع الكفاءة.",
+       "calculation_error": "خطأ أثناء تجهيز البيانات."
+    }
+  },
+  "fig6": {
+    "title": " تحليل باريتو (كمية المبيعات)",
+    "description": "تحليل باريتو للمنتجات التي تمثل 80% من كمية المبيعات",
+    "frequency": "monthly",
+    "x_axis": { "title": "المنتج", "type": "category" },
+    "y_axis": { "title": "كمية المبيعات (أعمدة)", "type": "number" },
+    "y2_axis": { "title": "النسبة التراكمية % (خط)", "type": "number" },
+    "series": { "sales": "كمية المبيعات", "cumulative": "النسبة التراكمية %" },
+    "errors": {
+        "no_pareto_data": "بيانات تحليل باريتو مفقودة (غالبًا بسبب عدم وجود مبيعات).",
+        "no_sales_quantity": "لم يتم العثور على منتجات بكمية مبيعات > 0 لتحليل باريتو.",
+        "config_error": "أعمدة مطلوبة مفقودة لتحليل باريتو.",
+        "no_results_found": "لا توجد بيانات متبقية بعد المعالجة.",
+        "calculation_error": "خطأ أثناء تجهيز البيانات."
+    }
+  },
+  "fig7": {
+    "title": " السعر مقابل الكمية المباعة",
+    "description": "العلاقة بين سعر البيع وكمية المبيعات للمنتجات",
+    "frequency": "monthly",
+    "x_axis": { "title": "سعر البيع", "type": "number" },
+    "y_axis": { "title": "الكمية المباعة", "type": "number" },
+    "series": { "products": "المنتجات" },
+    "errors": {
+        "no_product_flow": "بيانات تدفق المنتج مفقودة أو فارغة.",
+        "no_scatter_points": "لم يتم العثور على منتجات بسعر بيع وكمية مبيعات موجبة.",
+        "config_error": "أعمدة مطلوبة مفقودة للرسم المبعثر.",
+        "calculation_error": "خطأ أثناء تجهيز البيانات."
+    }
+  },
+  "fig9": {
+    "title": " منتجات تحتاج لإعادة تخزين (<= {threshold})",
+    "description": "المنتجات التي يقل مخزونها الحالي عن أو يساوي {threshold}",
+    "frequency": "weekly",
+    "x_axis": { "title": "المنتج", "type": "category" },
+    "y_axis": { "title": "المخزون الحالي", "type": "number" },
+    "series": { "stock": "المخزون" },
+    "errors": {
+        "no_product_flow": "بيانات تدفق المنتج مفقودة أو فارغة.",
+        "no_restock_needed": "لم يتم العثور على منتجات تتطلب إعادة تخزين (أقل من الحد الأدنى).",
+        "config_error": "أعمدة مطلوبة مفقودة لتحليل إعادة التخزين.",
+        "calculation_error": "خطأ أثناء تجهيز البيانات."
+    }
+  },
+  "fig10": {
+    "title": " المنتجات الراكدة",
+    "description": "المنتجات التي لم يتم بيعها مؤخرًا، مصنفة حسب فترة الركود",
+    "frequency": "monthly",
+    "x_axis": { "title": "المنتج", "type": "category" },
+    "y_axis": { "title": "أيام منذ آخر بيع", "type": "number" },
+    "series": { "category": "فترة الركود" },
+    "data_keys": { "category": "فترة الركود" },
+    "errors": {
+        "no_stagnant_data": "بيانات تحليل المنتجات الراكدة مفقودة.",
+        "no_stagnant_found": "لم يتم العثور على منتجات راكدة تطابق المعايير.",
+        "insufficient_history": "بيانات تاريخية غير كافية (< 90 يومًا).",
+        "config_error": "أعمدة مطلوبة مفقودة في بيانات الركود.",
+        "calculation_error": "خطأ أثناء تجهيز البيانات."
+    }
+  },
+  "fig11": {
+    "title": " المبيعات اليومية والتنبؤ",
+    "description": "المبيعات اليومية الفعلية والتنبؤ مع فترة الثقة",
+    "frequency": "daily",
+    "x_axis": { "title": "التاريخ", "type": "date" },
+    "y_axis": { "title": "إجمالي المبيعات", "type": "number" },
+    "series": { "actual": "المبيعات الفعلية", "forecast": "المبيعات المتوقعة", "ci": "فترة الثقة 95%" },
+    "errors": {
+        "no_details_data": "بيانات تفاصيل فواتير البيع مفقودة أو فارغة.",
+        "missing_columns": "أعمدة التاريخ أو السعر الإجمالي المطلوبة مفقودة.",
+        "no_actual_sales": "لم يتم العثور على بيانات مبيعات يومية فعلية.",
+        "forecast_unavailable_data": "التنبؤ يتطلب حوالي 360 يومًا من البيانات التاريخية.",
+        "calculation_error": "خطأ أثناء تجهيز أو دمج البيانات.",
+        "config_error": "خطأ داخلي في الإعدادات (نماذج)."
+    }
+  },
+  "fig12": {
+    "title": " متوسط الفاتورة الشهري والتنبؤ",
+    "description": "متوسط قيمة الفاتورة الشهرية (الفعلي مقابل المتوقع)",
+    "frequency": "monthly",
+    "x_axis": { "title": "الشهر (YYYY-MM)", "type": "category" },
+    "y_axis": { "title": "متوسط قيمة الفاتورة", "type": "number" },
+    "series": { "actual": "المتوسط الفعلي", "forecast": "المتوسط المتوقع", "ci": "فترة ثقة 95%" },
+    "errors": {
+        "no_ts_data": "بيانات السلاسل الزمنية لمتوسط الفاتورة الشهرية مفقودة.",
+        "insufficient_actual_months": "بيانات فعلية غير كافية: مطلوب شهرين على الأقل.",
+        "forecast_unavailable_data": "التنبؤ يتطلب حوالي 12 شهرًا من البيانات التاريخية.",
+        "calculation_error": "خطأ أثناء تجهيز أو دمج البيانات.",
+        "config_error": "خطأ داخلي في الإعدادات (نماذج)."
+    }
+  },
+  "fig13": {
+    "title": " أقل 10 منتجات مبيعاً",
+    "description": "أقل 10 منتجات مبيعاً حسب الكمية",
+    "frequency": "monthly",
+    "x_axis": { "title": "الكمية المباعة", "type": "number" },
+    "y_axis": { "title": "المنتج", "type": "category" },
+    "series": { "sales": "المبيعات" },
+    "errors": {
+        "no_product_flow": "بيانات تدفق المنتج مفقودة أو فارغة.",
+        "no_sold_products": "لم يتم العثور على منتجات ذات مبيعات مسجلة.",
+        "insufficient_product_count": "يجب توفر أكثر من 10 منتجات مباعة لعرض هذا المخطط بشكل مفيد.", 
+        "no_results_found": "تعذر تحديد أقل المنتجات مبيعًا.",
+        "config_error": "أعمدة مطلوبة مفقودة.",
+        "calculation_error": "خطأ أثناء تجهيز البيانات."
+    }
+  },
+  "fig14": {
+    "title": " تكرار كميات المبيعات (أعلى 15)",
+    "description": "جدول يوضح عدد المنتجات لكل كمية مبيعًا (أعلى 15 كمية تكرارًا)",
+    "frequency": "quarterly",
+    "x_axis": { "title": "الأعمدة", "type": "category" },
+    "y_axis": { "title": "الصفوف", "type": "category" },
+    "columns": { "quantity": "الكمية المباعة", "num_products": "عدد المنتجات" },
+    "series": [ {"name": "الكمية المباعة"}, {"name": "عدد المنتجات"} ],
+     "errors": {
+        "no_details_data": "بيانات تفاصيل فواتير البيع مفقودة أو فارغة.",
+        "missing_columns": "أعمدة معرف المنتج أو الكمية المطلوبة مفقودة.",
+        "no_sales_found": "لم يتم العثور على منتجات بكمية مبيعات > 0.",
+        "insufficient_variety": "تنوع المنتجات غير كافٍ.",
+        "no_results_found": "لا توجد بيانات تكرار للعرض.",
+        "calculation_error": "خطأ في حساب التكرار أو أثناء تجهيز البيانات.",
+        "config_error": "خطأ داخلي في الإعدادات (نماذج)."
+    }
+  },
+  "fig15": {
+    "title": " أعلى 10 منتجات مبيعًا",
+    "description": "أعلى 10 منتجات مبيعًا حسب الكمية",
+    "frequency": "monthly",
+    "x_axis": { "title": "الكمية المباعة", "type": "number" },
+    "y_axis": { "title": "المنتج", "type": "category" },
+    "series": { "sales": "المبيعات" },
+     "errors": {
+        "no_product_flow": "بيانات تدفق المنتج مفقودة أو فارغة.",
+        "no_sold_products": "لم يتم العثور على منتجات ذات مبيعات مسجلة.",
+        "insufficient_product_count": "يجب توفر أكثر من 10 منتجات مباعة لعرض هذا المخطط بشكل مفيد.", 
+        "no_results_found": "تعذر تحديد أعلى المنتجات مبيعًا.",
+        "config_error": "أعمدة مطلوبة مفقودة.",
+        "calculation_error": "خطأ أثناء تجهيز البيانات."
+    }
+  },
+  "fig16": {
+    "title": " أعلى 10 منتجات ربحًا وإيرادًا",
+    "description": "حصص أعلى 10 منتجات من إجمالي الإيرادات والأرباح",
+    "frequency": "monthly",
+    "x_axis": { "title": "المنتج/الفئة", "type": "category" },
+    "y_axis": { "title": "القيمة", "type": "number" },
+    "series": { "revenue": "الإيرادات", "profit": "الربح" },
+    "errors": {
+        "no_pie_data": "بيانات الإدخال لمخططات الدائرة (الإيرادات/الأرباح) مفقودة.",
+        "no_valid_data": "لم يتم العثور على بيانات إيرادات أو أرباح صالحة لأفضل 10 منتجات.",
+        "too_few_products": "عدد قليل جدًا من المنتجات لتحليل الحصص بشكل مفيد.",
+        "calculation_error": "خطأ أثناء تجهيز البيانات.",
+        "config_error": "خطأ داخلي في الإعدادات (نماذج)."
+    }
+  },
+  "fig17": {
+    "title": "الموردين حسب المبلغ المستحق (أفضل 20)",
+    "description": "أعلى الموردين حسب المبالغ المستحقة لهم",
+    "frequency": "daily",
+    "x_axis": { "title": "المورد (المعرف)", "type": "category" },
+    "y_axis": { "title": "المبلغ المستحق", "type": "number" },
+    "series": { "amount": "المبلغ" },
+    "errors": {
+        "no_deferred_data": "تعذر حساب بيانات المبالغ المستحقة.",
+        "missing_columns": "أعمدة مطلوبة مفقودة لحساب المبلغ المستحق.",
+        "no_outstanding_found": "لم يتم العثور على موردين بمبالغ مستحقة.",
+         "no_results_found": "لم يتم العثور على موردين لأعلى 20 مبلغ مستحق.",
+        "calculation_error": "خطأ أثناء تجهيز أو حساب البيانات.",
+        "config_error": "خطأ داخلي في الإعدادات (نماذج)."
+    }
+  }
+}

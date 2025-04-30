@@ -1,0 +1,315 @@
+{
+  "common": {
+    "product": "Product",
+    "quantity": "Quantity",
+    "quantity_sold": "Quantity Sold",
+    "stock": "Stock",
+    "supplier_id": "Supplier ID",
+    "outstanding_amount": "Outstanding Amount",
+    "amount": "Amount",
+    "categories": "Categories",
+    "values": "Values",
+    "efficiency_category": "Efficiency Category",
+    "total_quantity": "Total Quantity",
+    "cogs": "COGS",
+    "margin": "Margin",
+    "revenue": "Revenue",
+    "profit": "Profit",
+    "cumulative_percentage": "Cumulative %",
+    "sale_price": "Sale Price",
+    "stagnancy_period": "Stagnancy Period",
+    "days_since_last_sale": "Days Since Last Sale",
+    "other": "Other",
+    "date": "Date",
+    "profit_change": "Profit Change",
+    "daily_profit_change": "Daily Profit Change",
+    "error_prefix": "Data Issue",
+    "zero_line": "Zero Line",
+    "product_name": "Product Name",
+    "last_sale_date": "Last Sale",
+    "current_stock": "Stock",
+    "product_id": "ID",
+    "series": "Series",
+    "type": "Type",
+    "6_month_limit": "6 Month Limit"
+  },
+  "frequencies": {
+    "daily": "Daily",
+    "weekly": "Weekly",
+    "monthly": "Monthly",
+    "quarterly": "Quarterly"
+  },
+  "axis_types": {
+    "category": "Category",
+    "number": "Number",
+    "date": "Date",
+    "text": "Text"
+  },
+  "efficiency_labels": {
+    "Undersupplied": "Undersupplied",
+    "Balanced": "Balanced",
+    "Oversupplied": "Oversupplied",
+    "N/A": "N/A"
+  },
+  "stagnant_labels": {
+    "3-6 months": "3-6 months",
+    "6-12 months": "6-12 months",
+    ">1 year": "> 1 year"
+  },
+  "error": {
+      "no_data": "No data available for this chart.",
+      "insufficient_data": "Insufficient data to generate a meaningful chart.",
+      "calculation_error": "An error occurred during data calculation.",
+      "config_error": "Configuration error for this chart.",
+      "no_results_found": "No relevant data found after applying filters.",
+      "forecast_requires_more_data": "More historical data is needed to generate a forecast.",
+      "no_series_plotted": "No data series could be plotted."
+  },
+  "fig1": {
+    "title": " Stock vs Sales (Top 20)",
+    "description": "Current Stock Quantity vs Sales Quantity for Top 20 Sold Products",
+    "frequency": "weekly",
+    "x_axis": { "title": "Product", "type": "category" },
+    "y_axis": { "title": "Quantity", "type": "number" },
+    "series": { "stock": "Current Stock", "sales": "Sales" },
+    "errors": {
+        "no_product_flow": "Product flow data is missing or empty.",
+        "no_sales": "No sales recorded for any product.",
+        "insufficient_sales_period": "Insufficient sales history (recommend at least 1 month) for reliable Top 20.",
+        "config_error": "Missing required columns.",
+        "no_results_found": "No products found for Top 20.",
+        "calculation_error": "Error during data preparation."
+    }
+  },
+  "fig2": {
+    "title": " Inventory Efficiency",
+    "description": "Product distribution by inventory efficiency status",
+    "frequency": "monthly",
+    "x_axis": { "title": "Efficiency Categories", "type": "category" },
+    "y_axis": { "title": "Number of Products", "type": "number" },
+    "errors": {
+        "no_product_flow": "Product flow data is missing or empty.",
+        "no_efficiency_data": "Could not calculate inventory efficiency for any product.",
+        "calculation_error": "Efficiency calculation failed or error during data preparation."
+    }
+  },
+  "fig3": {
+    "title": " Revenue Analysis (with COGS)",
+    "description": "Revenue, Cost of Goods Sold (COGS), and Profit Margin for Top 20 Products by Revenue",
+    "frequency": "monthly",
+    "x_axis": { "title": "Product", "type": "category" },
+    "y_axis": { "title": "Amount", "type": "number" },
+    "series": { "revenue": "Revenue", "cogs": "COGS", "margin": "Margin" },
+    "errors": {
+        "no_product_flow": "Product flow data is missing or empty.",
+        "missing_cost_data": "Cost price (buyPrice) is missing for all products.",
+        "no_sales": "No revenue recorded for any product.",
+        "config_error": "Missing required columns for revenue/COGS analysis.",
+        "calculation_error": "Error during data preparation."
+    }
+  },
+  "fig4": {
+    "title": "  Current Inventory vs. Sales (Top 20)",
+    "description": "Current Stock (bars) vs Sales Quantity (line) for Top 20 Sold Products",
+    "frequency": "weekly",
+    "x_axis": { "title": "Product", "type": "category" },
+    "y_axis": { "title": "Quantity", "type": "number" },
+    "series": { "stock": "Current Stock", "sales": "Sales" },
+    "errors": {
+        "no_product_flow": "Product flow data is missing or empty.",
+        "no_sales": "No sales recorded for any product.",
+        "insufficient_sales_period": "Insufficient sales history (recommend at least 1 month) for reliable Top 20.",
+        "config_error": "Missing required columns.",
+        "no_results_found": "No products found for Top 20.",
+        "calculation_error": "Error during data preparation."
+    }
+  },
+  "fig5": {
+    "title": " Overall Efficiency Comparison",
+    "description": "Total Stock and Sales aggregated by inventory efficiency category",
+    "frequency": "monthly",
+    "x_axis": { "title": "Efficiency Category", "type": "category" },
+    "y_axis": { "title": "Total Quantity", "type": "number" },
+    "series": { "stock": "Total Stock", "sales": "Total Sales" },
+    "errors": {
+       "no_product_flow": "Product flow data is missing or empty.",
+       "no_efficiency_data": "No data found for efficiency categories.",
+       "config_error": "Missing required columns for efficiency aggregation.",
+       "calculation_error": "Error during data preparation."
+    }
+  },
+  "fig6": {
+    "title": " Pareto Analysis (Sales Quantity)",
+    "description": "Pareto analysis for products representing 80% of sales quantity",
+    "frequency": "monthly",
+    "x_axis": { "title": "Product", "type": "category" },
+    "y_axis": { "title": "Sales Quantity (Bars)", "type": "number" },
+    "y2_axis": { "title": "Cumulative %", "type": "number" },
+    "series": { "sales": "Sales Quantity", "cumulative": "Cumulative %" },
+    "errors": {
+        "no_pareto_data": "Pareto analysis data is missing (likely no sales).",
+        "no_sales_quantity": "No products found with sales quantity > 0 for Pareto analysis.",
+        "config_error": "Missing required columns for Pareto analysis.",
+        "no_results_found": "No data remaining after processing.",
+        "calculation_error": "Error during data preparation."
+    }
+  },
+  "fig7": {
+    "title": " Price vs Quantity Sold",
+    "description": "Relationship between Sale Price and Sales Quantity for products",
+    "frequency": "monthly",
+    "x_axis": { "title": "Sale Price", "type": "number" },
+    "y_axis": { "title": "Quantity Sold", "type": "number" },
+    "series": { "products": "Products" },
+    "errors": {
+        "no_product_flow": "Product flow data is missing or empty.",
+        "no_scatter_points": "No products found with positive sales price and quantity.",
+        "config_error": "Missing required columns for scatter plot.",
+        "calculation_error": "Error during data preparation."
+    }
+  },
+
+  "fig9": {
+    "title": " Products to Restock (<= {threshold})",
+    "description": "Products with current stock less than or equal to {threshold}",
+    "frequency": "weekly",
+    "x_axis": { "title": "Product", "type": "category" },
+    "y_axis": { "title": "Current Stock", "type": "number" },
+    "series": { "stock": "Stock" },
+    "errors": {
+        "no_product_flow": "Product flow data is missing or empty.",
+        "no_restock_needed": "No products found requiring restock (below threshold).",
+        "config_error": "Missing required columns for restock analysis.",
+        "calculation_error": "Error during data preparation."
+    }
+  },
+  "fig10": {
+    "title": " Stagnant Products",
+    "description": "Products not sold recently, categorized by stagnancy period",
+    "frequency": "monthly",
+    "x_axis": { "title": "Product", "type": "category" },
+    "y_axis": { "title": "Days Since Last Sale", "type": "number" },
+    "series": { "category": "Stagnancy Period" },
+    "data_keys": { "category": "Stagnancy Period" },
+    "errors": {
+        "no_stagnant_data": "Stagnant product analysis data is missing.",
+        "no_stagnant_found": "No stagnant products found matching the criteria.",
+        "insufficient_history": "Insufficient history (<90 days).",
+        "config_error": "Missing required columns in stagnant data.",
+        "calculation_error": "Error during data preparation."
+    }
+  },
+  "fig11": {
+    "title": " Daily Sales & Forecast",
+    "description": "Actual daily sales and forecast with confidence interval",
+    "frequency": "daily",
+    "x_axis": { "title": "Date", "type": "date" },
+    "y_axis": { "title": "Total Sales", "type": "number" },
+    "series": { "actual": "Actual Sales", "forecast": "Forecasted Sales", "ci": "95% Confidence Interval" },
+    "errors": {
+        "no_details_data": "Sale invoice details data is missing or empty.",
+        "missing_columns": "Missing required date or total price columns.",
+        "no_actual_sales": "No actual daily sales data found.",
+        "forecast_unavailable_data": "Forecast requires approx. 360 days of history.",
+        "calculation_error": "Error during data preparation or combination.",
+        "config_error": "Internal configuration error (models)."
+    }
+  },
+  "fig12": {
+    "title": " Monthly Avg Invoice & Forecast",
+    "description": "Monthly average invoice value (actual vs forecast)",
+    "frequency": "monthly",
+    "x_axis": { "title": "Month (YYYY-MM)", "type": "category" },
+    "y_axis": { "title": "Avg Invoice Value", "type": "number" },
+    "series": { "actual": "Actual Avg", "forecast": "Forecasted Avg", "ci": "95% CI" },
+    "errors": {
+        "no_ts_data": "Monthly average invoice time series data is missing.",
+        "insufficient_actual_months": "Insufficient actual data: At least 2 months required.",
+        "forecast_unavailable_data": "Forecast requires approx. 12 months of history.",
+        "calculation_error": "Error during data preparation or combination.",
+        "config_error": "Internal configuration error (models)."
+    }
+  },
+  "fig13": {
+    "title": " Bottom 10 Selling Products",
+    "description": "Bottom 10 selling products by quantity",
+    "frequency": "monthly",
+    "x_axis": { "title": "Quantity Sold", "type": "number" },
+    "y_axis": { "title": "Product", "type": "category" },
+    "series": { "sales": "Sales" },
+    "errors": {
+        "no_product_flow": "Product flow data is missing or empty.",
+        "no_sold_products": "No products found with recorded sales.",
+        "insufficient_product_count": "Need more than 10 sold products to display this chart meaningfully.", 
+        "no_results_found": "Could not determine bottom selling products.",
+        "config_error": "Missing required columns.",
+        "calculation_error": "Error during data preparation."
+    }
+  },
+
+  "fig14": {
+    "title": " Sales Quantity Frequency (Top 15)",
+    "description": "Table showing the number of products for each sales quantity (Top 15 most frequent quantities)",
+    "frequency": "quarterly",
+    "x_axis": { "title": "Columns", "type": "category" },
+    "y_axis": { "title": "Rows", "type": "category" },
+    "columns": { "quantity": "Quantity Sold", "num_products": "Number of Products" },
+    "series": [ {"name": "Quantity Sold"}, {"name": "Number of Products"} ],
+    "errors": {
+        "no_details_data": "Sale invoice details data is missing or empty.",
+        "missing_columns": "Missing required product ID or quantity columns.",
+        "no_sales_found": "No products found with sales quantity > 0.",
+        "insufficient_variety": "Insufficient product variety.",
+        "no_results_found": "No frequency data to display.",
+        "calculation_error": "Error calculating sales frequency or during data preparation.",
+        "config_error": "Internal configuration error (models)."
+    }
+  },
+  "fig15": {
+    "title": " Top 10 Selling Products",
+    "description": "Top 10 selling products by quantity",
+    "frequency": "monthly",
+    "x_axis": { "title": "Quantity Sold", "type": "number" },
+    "y_axis": { "title": "Product", "type": "category" },
+    "series": { "sales": "Sales" },
+     "errors": {
+        "no_product_flow": "Product flow data is missing or empty.",
+        "no_sold_products": "No products found with recorded sales.",
+        "insufficient_product_count": "Need more than 10 sold products to display this chart meaningfully.",
+        "no_results_found": "Could not determine top selling products.",
+        "config_error": "Missing required columns.",
+        "calculation_error": "Error during data preparation."
+    }
+  },
+  "fig16": {
+    "title": " Top 10 Revenue & Profit Shares",
+    "description": "Shares of Top 10 products in total revenue and profit",
+    "frequency": "monthly",
+    "x_axis": { "title": "Product/Category", "type": "category" },
+    "y_axis": { "title": "Value", "type": "number" },
+    "series": { "revenue": "Revenue", "profit": "Profit" },
+    "errors": {
+        "no_pie_data": "Input data for pie charts (revenue/profit) is missing.",
+        "no_valid_data": "No valid revenue or profit data found for the Top 10 products.",
+        "too_few_products": "Too few products for meaningful shares.",
+        "calculation_error": "Error during data preparation.",
+        "config_error": "Internal configuration error (models)."
+    }
+  },
+  "fig17": {
+    "title": " Suppliers by Outstanding Amount (Top 20)",
+    "description": "Top suppliers by outstanding amount due to them",
+    "frequency": "daily",
+    "x_axis": { "title": "Supplier (ID)", "type": "category" },
+    "y_axis": { "title": "Outstanding Amount", "type": "number" },
+    "series": { "amount": "Amount" },
+    "errors": {
+        "no_deferred_data": "Outstanding amounts data could not be calculated.",
+        "missing_columns": "Missing required columns for outstanding amount calculation.",
+        "no_outstanding_found": "No suppliers found with outstanding amounts.",
+        "no_results_found": "No suppliers found for Top 20 outstanding.",
+        "calculation_error": "Error during data preparation or calculation.",
+        "config_error": "Internal configuration error (models)."
+    }
+  }
+}
